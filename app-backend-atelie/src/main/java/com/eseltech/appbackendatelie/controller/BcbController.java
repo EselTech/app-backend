@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/bcb")
 public class BcbController {
@@ -25,7 +26,7 @@ public class BcbController {
         return ResponseEntity.ok(impostoService.inserirImposto(imposto));
     }
 
-    @PostMapping("/atualizar-indicadores")
+    @PostMapping("/atualizar-impostos")
     public ResponseEntity<String> atualizarImpostos(){
         impostoService.atualizarImpostos();
         return ResponseEntity.ok("Atualizado com sucesso!");
