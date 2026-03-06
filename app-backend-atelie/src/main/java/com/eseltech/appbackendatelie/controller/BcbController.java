@@ -30,4 +30,10 @@ public class BcbController {
         impostoService.atualizarImpostos();
         return ResponseEntity.ok("Atualizado com sucesso!");
     }
+
+    @DeleteMapping("/deletar-imposto/{id}")
+    public ResponseEntity<String> deletarImposto(@PathVariable Integer id) {
+        impostoService.deletarImposto(id);
+        return ResponseEntity.ok("Imposto deletado com sucesso!");
+    }
 }

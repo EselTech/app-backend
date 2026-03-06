@@ -55,4 +55,8 @@ public class ImpostoService {
         return "Salvo com sucesso!";
 
     }
+
+    public void deletarImposto(Integer id) {
+        historicoImpostoRepository.deleteByImpostoId(id);
+    }
 }

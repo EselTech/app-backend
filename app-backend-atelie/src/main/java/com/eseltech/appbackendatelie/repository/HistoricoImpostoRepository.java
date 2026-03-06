@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HistoricoImpostoRepository extends JpaRepository<HistoricoImposto, Long> {
+    HistoricoImposto findByImpostoId(Integer impostoId);
+
+    void deleteByImpostoId(Integer imposto_id);
 }
