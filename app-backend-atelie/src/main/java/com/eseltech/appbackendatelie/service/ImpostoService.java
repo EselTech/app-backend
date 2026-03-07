@@ -75,9 +75,10 @@ public class ImpostoService {
         List<Imposto> listImposto = impostoRepository.findAll();
 
         for (Imposto imposto : listImposto) {
-
-            listHistorico.add(historicoImpostoRepository.acharRecentePorImpostoId(imposto.getId()));
-
+            HistoricoImposto historico = historicoImpostoRepository.acharRecentePorImpostoId(imposto.getId());
+            if (historico != null) {
+                listHistorico.add(historico);
+            }
         }
 
         return toDTO(listHistorico);
@@ -127,5 +128,17 @@ public class ImpostoService {
     public void deletarImposto(Integer id) {
         historicoImpostoRepository.deleteByImpostoId(id);
         impostoRepository.deleteById(id);
+    }
+
+    public List<Imposto> buscarTodosImpostos() {
+        return impostoRepository.findAll();
+    }
+
+    public void atualizarImposto(Imposto imposto, Integer id) {
+        Imposto impostoExistente = impostoRepository.findById(id).orElseThrow(() -> new RuntimeException("Imposto não encontrado com id: " + id));
+        impostoExistente.setNomeImposto(imposto.getNomeImposto());
+        impostoExistente.setCodigoSgs(imposto.getCodigoSgs());
+        historicoImpostoRepository.deleteByImpostoId(id);
+        impostoRepository.save(impostoExistente);
     }
 }

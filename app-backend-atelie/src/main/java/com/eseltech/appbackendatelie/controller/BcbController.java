@@ -159,4 +159,21 @@ public class BcbController {
         impostoService.deletarImposto(id);
         return ResponseEntity.ok("Imposto deletado com sucesso!");
     }
+
+    @GetMapping("/find-all-impostos")
+    public ResponseEntity<List<Imposto>> findAllImpostos() {
+        List<Imposto> impostos = impostoService.buscarTodosImpostos();
+        return ResponseEntity.ok(impostos);
+    }
+
+    @PutMapping("/atualizar-imposto/{id}")
+    public ResponseEntity<String> atualizarImposto(
+            @Parameter(
+                    description = "Objeto contendo os dados do imposto a ser atualizado, incluindo o ID",
+                    required = true
+            )
+            @RequestBody Imposto imposto, @PathVariable Integer id) {
+        impostoService.atualizarImposto(imposto, id);
+        return ResponseEntity.ok("Imposto atualizado com sucesso!");
+    }
 }
