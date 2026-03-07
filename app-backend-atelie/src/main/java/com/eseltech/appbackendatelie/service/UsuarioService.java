@@ -28,4 +28,14 @@ public class UsuarioService {
     public void removerUsuario(Long id) {
         usuarioRepository.deleteById(id);
     }
+
+    public String logar(String nome, String senha) {
+        Usuario usuarioEncontrado = usuarioRepository.findByNomeAndSenha(nome, senha);
+
+        if (usuarioEncontrado == null) {
+            throw new RuntimeException("Usuário ou senha inválidos");
+        }
+
+        return "Login bem-sucedido";
+    }
 }
