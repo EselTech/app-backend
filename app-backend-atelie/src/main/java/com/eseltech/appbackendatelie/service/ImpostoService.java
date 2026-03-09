@@ -141,4 +141,14 @@ public class ImpostoService {
         historicoImpostoRepository.deleteByImpostoId(id);
         impostoRepository.save(impostoExistente);
     }
+
+    /**
+     * Busca impostos pelo nome (busca parcial, case-insensitive).
+     *
+     * @param nome Nome ou parte do nome do imposto a ser buscado
+     * @return Lista de impostos que correspondem à busca
+     */
+    public List<Imposto> buscarPorNome(String nome) {
+        return impostoRepository.findByNomeImpostoContainingIgnoreCase(nome);
+    }
 }

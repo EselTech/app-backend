@@ -166,6 +166,44 @@ public class BcbController {
         return ResponseEntity.ok(impostos);
     }
 
+    @Operation(
+            summary = "Buscar impostos por nome",
+            description = "Busca impostos cujo nome contenha o texto especificado. " +
+                    "A busca é case-insensitive e retorna todos os impostos que contenham " +
+                    "o termo informado em qualquer parte do nome."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Busca realizada com sucesso",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Imposto.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Parâmetro de busca inválido",
+                    content = @Content
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Erro interno do servidor",
+                    content = @Content
+            )
+    })
+    @GetMapping("/buscar-por-nome")
+    public ResponseEntity<List<Imposto>> buscarPorNome(
+            @Parameter(
+                    description = "Nome ou parte do nome do imposto a ser buscado (case-insensitive)",
+                    required = true,
+                    example = "SELIC"
+            )
+            @RequestParam String nome) {
+        List<Imposto> impostos = impostoService.buscarPorNome(nome);
+        return ResponseEntity.ok(impostos);
+    }
+
     @PutMapping("/atualizar-imposto/{id}")
     public ResponseEntity<String> atualizarImposto(
             @Parameter(
