@@ -1,8 +1,17 @@
 package com.eseltech.appbackendatelie.service;
 
+import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
+import com.eseltech.appbackendatelie.DTO.LoginResponseDTO;
+import com.eseltech.appbackendatelie.DTO.RegisterDTO;
 import com.eseltech.appbackendatelie.Usuario;
 import com.eseltech.appbackendatelie.repository.UsuarioRepository;
+import com.eseltech.appbackendatelie.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -11,12 +20,25 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public List<Usuario> buscarTodos() {
-        return usuarioRepository.findAll();
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private TokenService tokenService;
+
+    public void registrarUsuario(RegisterDTO registerDTO) {
+        if (usuarioRepository.findByUsername(registerDTO.username()) != null) {
+            throw new RuntimeException("Usuário já existe");
+        }
+
+        String senhaCriptografada = new BCryptPasswordEncoder().encode(registerDTO.senha());
+        Usuario novoUsuario = new Usuario(registerDTO.nome(), registerDTO.username(), registerDTO.email(), senhaCriptografada, registerDTO.role());
+
+        usuarioRepository.save(novoUsuario);
     }
 
-    public void cadastrarUsuario(Usuario usuario) {
-        usuarioRepository.save(usuario);
+    public List<Usuario> buscarTodos() {
+        return usuarioRepository.findAll();
     }
 
     public void atualizarUsuario(Usuario usuario, Long id) {
@@ -29,13 +51,12 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    public String logar(String nome, String senha) {
-        Usuario usuarioEncontrado = usuarioRepository.findByNomeAndSenha(nome, senha);
+    public LoginResponseDTO logar(AuthenticationDTO authenticationDTO) {
+        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDTO.username(), authenticationDTO.senha());
+        Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-        if (usuarioEncontrado == null) {
-            throw new RuntimeException("Usuário ou senha inválidos");
-        }
+        String token = tokenService.gerarToken((Usuario) auth.getPrincipal());
 
-        return "Login bem-sucedido";
+        return new LoginResponseDTO(token);
     }
 }
