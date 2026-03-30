@@ -1,4 +1,4 @@
-package com.eseltech.appbackendatelie;
+package com.eseltech.appbackendatelie.modal;
 
 import com.eseltech.appbackendatelie.entity.enums.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
