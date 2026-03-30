@@ -1,7 +1,6 @@
 package com.eseltech.appbackendatelie.controller;
 
-import com.eseltech.appbackendatelie.Usuario;
-import com.eseltech.appbackendatelie.entity.requests.LoginRequest;
+import com.eseltech.appbackendatelie.modal.Usuario;
 import com.eseltech.appbackendatelie.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

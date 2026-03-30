@@ -1,6 +1,6 @@
 package com.eseltech.appbackendatelie.repository;
 
-import com.eseltech.appbackendatelie.Usuario;
+import com.eseltech.appbackendatelie.modal.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UserDetails;
