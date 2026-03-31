@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.controller;
 
+import com.eseltech.appbackendatelie.DTO.AuthResponseDTO;
 import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
 import com.eseltech.appbackendatelie.DTO.RegisterDTO;
 import com.eseltech.appbackendatelie.DTO.TokenPairDTO;
@@ -7,6 +8,7 @@ import com.eseltech.appbackendatelie.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -67,6 +69,7 @@ public class AuthenticationController {
                     description = "Login realizado com sucesso - Tokens retornados em cookies HttpOnly",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = AuthResponseDTO.class),
                             examples = @ExampleObject(
                                     name = "Resposta de sucesso",
                                     value = "{\"message\": \"Login realizado com sucesso\"}"
@@ -91,7 +94,7 @@ public class AuthenticationController {
             )
     })
     @PostMapping("/login")
-    public ResponseEntity<String> logar(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<?> logar(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
         try {
             TokenPairDTO tokens = usuarioService.logar(authenticationDTO);
 
@@ -111,10 +114,13 @@ public class AuthenticationController {
                     .sameSite("Strict")
                     .build();
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+            headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+
             return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
-                    .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-                    .body("{\"message\": \"Login realizado com sucesso\"}");
+                    .headers(headers)
+                    .body(new AuthResponseDTO("Login realizado com sucesso"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Erro ao fazer login: " + e.getMessage());
         }
@@ -140,6 +146,7 @@ public class AuthenticationController {
                     description = "Access Token renovado com sucesso",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = AuthResponseDTO.class),
                             examples = @ExampleObject(
                                     name = "Sucesso",
                                     value = "{\"message\": \"Token renovado com sucesso\"}"
@@ -159,7 +166,7 @@ public class AuthenticationController {
             )
     })
     @PostMapping("/refresh")
-    public ResponseEntity<String> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
+    public ResponseEntity<?> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
             return ResponseEntity.status(401).body("Refresh token não fornecido");
         }
@@ -180,7 +187,7 @@ public class AuthenticationController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
-                .body("{\"message\": \"Token renovado com sucesso\"}");
+                .body(new AuthResponseDTO("Token renovado com sucesso"));
     }
 
     @Operation(

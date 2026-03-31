@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.config;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -21,7 +22,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig implements WebMvcConfigurer {
 
     @Value("${cors.allowed-origins:http://localhost:3000}")
-    private String allowedOrigins;
+    private String allowedOriginsConfig;
+
+    private String[] allowedOrigins;
+
+    @PostConstruct
+    public void init() {
+        allowedOrigins = allowedOriginsConfig.split(",");
+    }
 
     /**
      * Configura o mapeamento CORS para permitir requisições de origens específicas
@@ -32,7 +40,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(allowedOrigins.split(","))
+                .allowedOrigins(allowedOrigins)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
