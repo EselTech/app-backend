@@ -1,8 +1,8 @@
 package com.eseltech.appbackendatelie.service;
 
 import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
-import com.eseltech.appbackendatelie.DTO.LoginResponseDTO;
 import com.eseltech.appbackendatelie.DTO.RegisterDTO;
+import com.eseltech.appbackendatelie.DTO.TokenPairDTO;
 import com.eseltech.appbackendatelie.modal.Usuario;
 import com.eseltech.appbackendatelie.repository.UsuarioRepository;
 import com.eseltech.appbackendatelie.security.TokenService;
@@ -14,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
+/**
+ * Serviço responsável pelas operações relacionadas a usuários.
+ */
 @Service
 public class UsuarioService {
     @Autowired
@@ -50,12 +53,40 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    public LoginResponseDTO logar(AuthenticationDTO authenticationDTO) {
+    /**
+     * Autentica o usuário e gera o par de tokens (Access e Refresh).
+     *
+     * @param authenticationDTO credenciais do usuário
+     * @return TokenPairDTO contendo os tokens de acesso e refresh
+     */
+    public TokenPairDTO logar(AuthenticationDTO authenticationDTO) {
         UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDTO.username(), authenticationDTO.senha());
         Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-        String token = tokenService.gerarToken((Usuario) auth.getPrincipal());
+        Usuario usuario = (Usuario) auth.getPrincipal();
+        String accessToken = tokenService.gerarAccessToken(usuario);
+        String refreshToken = tokenService.gerarRefreshToken(usuario);
 
-        return new LoginResponseDTO(token);
+        return new TokenPairDTO(accessToken, refreshToken);
+    }
+
+    /**
+     * Gera um novo Access Token a partir de um Refresh Token válido.
+     *
+     * @param refreshToken o Refresh Token do usuário
+     * @return o novo Access Token ou null se o Refresh Token for inválido
+     */
+    public String renovarAccessToken(String refreshToken) {
+        String username = tokenService.validarRefreshToken(refreshToken);
+        if (username == null || username.isEmpty()) {
+            return null;
+        }
+
+        Usuario usuario = (Usuario) usuarioRepository.findByUsername(username);
+        if (usuario == null) {
+            return null;
+        }
+
+        return tokenService.gerarAccessToken(usuario);
     }
 }
