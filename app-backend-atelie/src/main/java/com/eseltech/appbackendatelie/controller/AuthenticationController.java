@@ -1,33 +1,42 @@
 package com.eseltech.appbackendatelie.controller;
 
 import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
-import com.eseltech.appbackendatelie.DTO.LoginResponseDTO;
 import com.eseltech.appbackendatelie.DTO.RegisterDTO;
+import com.eseltech.appbackendatelie.DTO.TokenPairDTO;
 import com.eseltech.appbackendatelie.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
+
 /**
  * Controller responsável pela autenticação e registro de usuários.
- * Implementa o fluxo de autenticação JWT da aplicação.
+ * Implementa o fluxo de autenticação JWT com HttpOnly Cookies.
  */
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "Autenticação", description = "API para autenticação JWT - login e registro de usuários")
+@Tag(name = "Autenticação", description = "API para autenticação JWT - login e registro de usuários com HttpOnly Cookies")
 public class AuthenticationController {
+
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
+    private static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
+    private static final Duration ACCESS_TOKEN_MAX_AGE = Duration.ofMinutes(15);
+    private static final Duration REFRESH_TOKEN_MAX_AGE = Duration.ofDays(7);
 
     @Autowired
     private UsuarioService usuarioService;
@@ -35,13 +44,19 @@ public class AuthenticationController {
     @Operation(
             summary = "Realizar login",
             description = """
-                    Autentica o usuário com username e senha, retornando um token JWT válido.
+                    Autentica o usuário com username e senha, retornando tokens JWT em cookies HttpOnly.
                     
                     **Fluxo de autenticação:**
                     1. O usuário envia suas credenciais (username e senha)
                     2. O sistema valida as credenciais contra o banco de dados
-                    3. Se válidas, um token JWT é gerado com validade de 2 horas
-                    4. O token deve ser usado no header `Authorization: Bearer {token}` nas próximas requisições
+                    3. Se válidas, são gerados dois tokens JWT:
+                       - **Access Token**: válido por 15 minutos, usado para autenticação nas requisições
+                       - **Refresh Token**: válido por 7 dias, usado para renovar o Access Token
+                    4. Os tokens são retornados em cookies HttpOnly seguros
+                    
+                    **Cookies retornados:**
+                    - `access_token`: Path="/", HttpOnly=true, Secure=true, SameSite=Strict
+                    - `refresh_token`: Path="/auth/refresh", HttpOnly=true, Secure=true, SameSite=Strict
                     
                     **Importante:** Este endpoint é público e não requer autenticação prévia.
                     """
@@ -49,13 +64,12 @@ public class AuthenticationController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Login realizado com sucesso",
+                    description = "Login realizado com sucesso - Tokens retornados em cookies HttpOnly",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = LoginResponseDTO.class),
                             examples = @ExampleObject(
                                     name = "Resposta de sucesso",
-                                    value = "{\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"}"
+                                    value = "{\"message\": \"Login realizado com sucesso\"}"
                             )
                     )
             ),
@@ -77,12 +91,96 @@ public class AuthenticationController {
             )
     })
     @PostMapping("/login")
-    public ResponseEntity logar(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<String> logar(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
         try {
-            return ResponseEntity.ok(usuarioService.logar(authenticationDTO));
+            TokenPairDTO tokens = usuarioService.logar(authenticationDTO);
+
+            ResponseCookie accessTokenCookie = ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, tokens.accessToken())
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(ACCESS_TOKEN_MAX_AGE)
+                    .sameSite("Strict")
+                    .build();
+
+            ResponseCookie refreshTokenCookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, tokens.refreshToken())
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/auth/refresh")
+                    .maxAge(REFRESH_TOKEN_MAX_AGE)
+                    .sameSite("Strict")
+                    .build();
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                    .body("{\"message\": \"Login realizado com sucesso\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Erro ao fazer login: " + e.getMessage());
         }
+    }
+
+    @Operation(
+            summary = "Renovar Access Token",
+            description = """
+                    Renova o Access Token utilizando o Refresh Token armazenado em cookie HttpOnly.
+                    
+                    **Fluxo de renovação:**
+                    1. O sistema captura o Refresh Token do cookie `refresh_token`
+                    2. Valida o Refresh Token
+                    3. Se válido, gera um novo Access Token
+                    4. Retorna o novo Access Token em cookie HttpOnly
+                    
+                    **Importante:** Este endpoint é público mas requer um Refresh Token válido no cookie.
+                    """
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Access Token renovado com sucesso",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "Sucesso",
+                                    value = "{\"message\": \"Token renovado com sucesso\"}"
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Refresh Token inválido ou expirado",
+                    content = @Content(
+                            mediaType = "text/plain",
+                            examples = @ExampleObject(
+                                    name = "Token inválido",
+                                    value = "Refresh token inválido ou expirado"
+                            )
+                    )
+            )
+    })
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            return ResponseEntity.status(401).body("Refresh token não fornecido");
+        }
+
+        String newAccessToken = usuarioService.renovarAccessToken(refreshToken);
+
+        if (newAccessToken == null) {
+            return ResponseEntity.status(401).body("Refresh token inválido ou expirado");
+        }
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, newAccessToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(ACCESS_TOKEN_MAX_AGE)
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                .body("{\"message\": \"Token renovado com sucesso\"}");
     }
 
     @Operation(
@@ -91,7 +189,7 @@ public class AuthenticationController {
                     Cadastra um novo usuário no sistema.
                     
                     **Restrições de acesso:**
-                    - Este endpoint requer autenticação com token JWT
+                    - Este endpoint requer autenticação com token JWT (via cookie HttpOnly)
                     - Apenas usuários com perfil **ADMIN** podem registrar novos usuários
                     
                     **Perfis disponíveis:**
@@ -139,7 +237,7 @@ public class AuthenticationController {
             )
     })
     @PostMapping("/registrar")
-    public ResponseEntity registrar(@RequestBody @Valid RegisterDTO registerDTO) {
+    public ResponseEntity<String> registrar(@RequestBody @Valid RegisterDTO registerDTO) {
         try{
             usuarioService.registrarUsuario(registerDTO);
             return ResponseEntity.ok().body("Usuário registrado com sucesso");
