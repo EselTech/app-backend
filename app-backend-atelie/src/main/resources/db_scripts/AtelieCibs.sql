@@ -39,3 +39,11 @@ VALUES(4, 'Dólar Comercial - Venda', 1);
 INSERT INTO imposto
 (id, nome_imposto, codigo_sgs)
 VALUES(5, 'Euro Comercial - Venda', 21619);
+
+CREATE TABLE `usuario`  (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `nome` varchar(100) NOT NULL,
+    `email` varchar(100) NOT NULL,
+    `senha` varchar(100) NOT NULL,
+    PRIMARY KEY (`id`)
+);
