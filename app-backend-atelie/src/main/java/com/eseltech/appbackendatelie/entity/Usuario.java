@@ -53,6 +53,9 @@ public class Usuario implements UserDetails {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
+    @ManyToOne
+    private Empresa empresa;
+
     public Usuario() {
     }
 
@@ -106,6 +109,14 @@ public class Usuario implements UserDetails {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     @Override

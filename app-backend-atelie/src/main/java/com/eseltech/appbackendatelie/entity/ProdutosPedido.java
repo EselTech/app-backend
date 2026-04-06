@@ -1,10 +1,27 @@
 package com.eseltech.appbackendatelie.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
+
+@Table(name = "produtosPedido")
+@Entity
+@Schema(description = "Entidade que representa uma lista de produtos dentro de um pedido cadastrado no sistema")
 public class ProdutosPedido {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    @Schema(description = "Identificador único do produtoPedido", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Integer id;
+
     private Pedido pedido;
+
     private Produto produto;
+
+    @Positive
+    @Column(name = "qtdProduto", nullable = false)
+    @Schema(description = "Quantidade do produto na lista", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Integer qtdProduto;
 
     public ProdutosPedido() {
