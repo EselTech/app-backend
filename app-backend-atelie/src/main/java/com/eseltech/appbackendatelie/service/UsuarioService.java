@@ -1,9 +1,9 @@
 package com.eseltech.appbackendatelie.service;
 
 import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
-import com.eseltech.appbackendatelie.DTO.LoginResponseDTO;
 import com.eseltech.appbackendatelie.DTO.RegisterDTO;
-import com.eseltech.appbackendatelie.modal.Usuario;
+import com.eseltech.appbackendatelie.DTO.TokenPairDTO;
+import com.eseltech.appbackendatelie.entity.Usuario;
 import com.eseltech.appbackendatelie.repository.UsuarioRepository;
 import com.eseltech.appbackendatelie.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +50,28 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    public LoginResponseDTO logar(AuthenticationDTO authenticationDTO) {
+    public TokenPairDTO logar(AuthenticationDTO authenticationDTO) {
         UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDTO.username(), authenticationDTO.senha());
         Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-        String token = tokenService.gerarToken((Usuario) auth.getPrincipal());
+        Usuario usuario = (Usuario) auth.getPrincipal();
+        String accessToken = tokenService.gerarAccessToken(usuario);
+        String refreshToken = tokenService.gerarRefreshToken(usuario);
 
-        return new LoginResponseDTO(token);
+        return new TokenPairDTO(accessToken, refreshToken);
+    }
+
+    public String renovarAccessToken(String refreshToken) {
+        String username = tokenService.validarRefreshToken(refreshToken);
+        if (username == null || username.isEmpty()) {
+            return null;
+        }
+
+        Usuario usuario = (Usuario) usuarioRepository.findByUsername(username);
+        if (usuario == null) {
+            return null;
+        }
+
+        return tokenService.gerarAccessToken(usuario);
     }
 }

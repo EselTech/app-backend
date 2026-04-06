@@ -2,9 +2,6 @@ package com.eseltech.appbackendatelie.DTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * DTO de resposta contendo o token JWT após autenticação bem-sucedida.
- */
 @Schema(description = "Resposta de autenticação contendo o token JWT")
 public record LoginResponseDTO(
         @Schema(

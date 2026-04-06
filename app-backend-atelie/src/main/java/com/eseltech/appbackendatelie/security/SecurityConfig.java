@@ -26,13 +26,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        // Endpoints públicos de autenticação
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        // Endpoints do Swagger/OpenAPI
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**").permitAll()
-                        // Registro apenas para ADMIN
                         .requestMatchers(HttpMethod.POST, "/auth/registrar").hasRole("ADMIN")
-                        // Demais endpoints requerem autenticação
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

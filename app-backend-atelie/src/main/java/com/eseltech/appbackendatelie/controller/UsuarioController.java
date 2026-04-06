@@ -1,6 +1,6 @@
 package com.eseltech.appbackendatelie.controller;
 
-import com.eseltech.appbackendatelie.modal.Usuario;
+import com.eseltech.appbackendatelie.entity.Usuario;
 import com.eseltech.appbackendatelie.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller responsável pelo gerenciamento de usuários do sistema.
- * Fornece endpoints para operações CRUD e autenticação de usuários.
- */
 @RestController
 @RequestMapping("/usuario")
 @Tag(name = "Usuários", description = "API para gerenciamento de usuários do sistema - cadastro, atualização, remoção e autenticação")
