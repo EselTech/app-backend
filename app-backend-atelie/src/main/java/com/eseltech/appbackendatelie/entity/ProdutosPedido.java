@@ -1,4 +1,4 @@
-package com.eseltech.appbackendatelie.modal;
+package com.eseltech.appbackendatelie.entity;
 
 public class ProdutosPedido {
 
