@@ -1,7 +1,6 @@
 package com.eseltech.appbackendatelie.controller;
 
-import com.eseltech.appbackendatelie.Usuario;
-import com.eseltech.appbackendatelie.entity.requests.LoginRequest;
+import com.eseltech.appbackendatelie.entity.Usuario;
 import com.eseltech.appbackendatelie.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,10 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller responsável pelo gerenciamento de usuários do sistema.
- * Fornece endpoints para operações CRUD e autenticação de usuários.
- */
 @RestController
 @RequestMapping("/usuario")
 @Tag(name = "Usuários", description = "API para gerenciamento de usuários do sistema - cadastro, atualização, remoção e autenticação")
@@ -46,35 +41,6 @@ public class UsuarioController {
     @GetMapping("/find-all")
     public ResponseEntity<List<Usuario>> buscarTodos() {
         return ResponseEntity.ok(usuarioService.buscarTodos());
-    }
-
-    @Operation(
-            summary = "Cadastrar novo usuário",
-            description = "Cadastra um novo usuário no sistema com nome, email e senha"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Usuário cadastrado com sucesso",
-                    content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "Cadastrado com sucesso!"))
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Dados inválidos fornecidos",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Erro interno do servidor",
-                    content = @Content
-            )
-    })
-    @PostMapping("/cadastrar")
-    public ResponseEntity<String> cadastrarUsuario(
-            @Parameter(description = "Dados do usuário a ser cadastrado", required = true)
-            @RequestBody Usuario usuario) {
-        usuarioService.cadastrarUsuario(usuario);
-        return ResponseEntity.ok().body("Cadastrado com sucesso!");
     }
 
     @Operation(
@@ -141,38 +107,4 @@ public class UsuarioController {
         usuarioService.removerUsuario(id);
         return ResponseEntity.noContent().build();
     }
-
-    @Operation(
-            summary = "Autenticar usuário",
-            description = "Realiza a autenticação do usuário através do nome e senha"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Login realizado com sucesso",
-                    content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "Login realizado com sucesso!"))
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Credenciais inválidas",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Dados de login inválidos",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Erro interno do servidor",
-                    content = @Content
-            )
-    })
-    @PostMapping("/logar")
-    public ResponseEntity<String> logar(
-            @Parameter(description = "Credenciais de login do usuário", required = true)
-            @RequestBody LoginRequest login) {
-        return ResponseEntity.ok(usuarioService.logar(login.getNome(), login.getSenha()));
-    }
-
 }

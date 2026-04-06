@@ -1,9 +1,10 @@
 package com.eseltech.appbackendatelie.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,8 @@ public class OpenApiConfig {
      */
     @Bean
     public OpenAPI customOpenAPI() {
+        final String securitySchemeName = "bearerAuth";
+
         return new OpenAPI()
                 .info(new Info()
                         .title("API Ateliê - Sistema de Gestão de Impostos")
@@ -37,6 +40,20 @@ public class OpenApiConfig {
                                 - Gerenciamento de histórico de impostos
                                 - Inserção e exclusão de impostos
                                 
+                                ## Autenticação JWT
+                                A API utiliza autenticação baseada em JWT (JSON Web Token).
+                                
+                                ### Como autenticar:
+                                1. Faça login no endpoint `/auth/login` com suas credenciais
+                                2. Copie o token retornado na resposta
+                                3. Clique no botão "Authorize" (🔒) no topo da página
+                                4. Digite: `Bearer <seu_token>` e confirme
+                                5. Agora você pode acessar os endpoints protegidos
+                                
+                                ### Perfis de Acesso:
+                                - **ADMIN**: Acesso total, incluindo registro de novos usuários
+                                - **USER**: Acesso aos endpoints de consulta e operações básicas
+                                
                                 ## Integração BCB
                                 A API integra-se com o Sistema Gerenciador de Séries Temporais (SGS) do Banco Central
                                 para obter valores atualizados de indicadores econômicos e tributários.
@@ -45,7 +62,18 @@ public class OpenApiConfig {
                         new Server()
                                 .url("http://localhost:8080")
                                 .description("Servidor de Desenvolvimento")
-                ));
+                ))
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+                .components(new Components()
+                        .addSecuritySchemes(securitySchemeName,
+                                new SecurityScheme()
+                                        .name(securitySchemeName)
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
+                                        .description("Insira o token JWT no formato: Bearer {token}")
+                        )
+                );
     }
 }
 
