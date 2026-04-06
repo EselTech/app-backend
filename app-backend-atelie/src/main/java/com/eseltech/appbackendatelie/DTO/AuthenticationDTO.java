@@ -2,9 +2,6 @@ package com.eseltech.appbackendatelie.DTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * DTO para requisição de autenticação (login).
- */
 @Schema(description = "Dados para autenticação do usuário")
 public record AuthenticationDTO(
         @Schema(

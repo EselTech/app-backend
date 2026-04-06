@@ -26,10 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 
-/**
- * Controller responsável pela autenticação e registro de usuários.
- * Implementa o fluxo de autenticação JWT com HttpOnly Cookies.
- */
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Autenticação", description = "API para autenticação JWT - login e registro de usuários com HttpOnly Cookies")

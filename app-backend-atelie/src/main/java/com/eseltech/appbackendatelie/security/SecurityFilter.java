@@ -16,10 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/**
- * Filtro de segurança que intercepta requisições e valida o Access Token JWT.
- * O token é lido a partir do cookie HttpOnly chamado "access_token".
- */
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
@@ -49,12 +45,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Recupera o Access Token do cookie HttpOnly "access_token".
-     *
-     * @param request a requisição HTTP
-     * @return o valor do token ou null se não encontrado
-     */
     private String recoverToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {

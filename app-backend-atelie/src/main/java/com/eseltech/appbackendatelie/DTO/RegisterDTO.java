@@ -3,9 +3,6 @@ package com.eseltech.appbackendatelie.DTO;
 import com.eseltech.appbackendatelie.entity.enums.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * DTO para requisição de registro de novo usuário.
- */
 @Schema(description = "Dados para registro de novo usuário no sistema")
 public record RegisterDTO(
         @Schema(

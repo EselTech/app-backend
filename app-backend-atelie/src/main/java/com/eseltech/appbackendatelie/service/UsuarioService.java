@@ -14,9 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-/**
- * Serviço responsável pelas operações relacionadas a usuários.
- */
 @Service
 public class UsuarioService {
     @Autowired
@@ -53,12 +50,6 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    /**
-     * Autentica o usuário e gera o par de tokens (Access e Refresh).
-     *
-     * @param authenticationDTO credenciais do usuário
-     * @return TokenPairDTO contendo os tokens de acesso e refresh
-     */
     public TokenPairDTO logar(AuthenticationDTO authenticationDTO) {
         UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDTO.username(), authenticationDTO.senha());
         Authentication auth = authenticationManager.authenticate(usernamePassword);
@@ -70,12 +61,6 @@ public class UsuarioService {
         return new TokenPairDTO(accessToken, refreshToken);
     }
 
-    /**
-     * Gera um novo Access Token a partir de um Refresh Token válido.
-     *
-     * @param refreshToken o Refresh Token do usuário
-     * @return o novo Access Token ou null se o Refresh Token for inválido
-     */
     public String renovarAccessToken(String refreshToken) {
         String username = tokenService.validarRefreshToken(refreshToken);
         if (username == null || username.isEmpty()) {
