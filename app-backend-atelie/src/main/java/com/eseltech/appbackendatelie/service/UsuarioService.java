@@ -3,7 +3,7 @@ package com.eseltech.appbackendatelie.service;
 import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
 import com.eseltech.appbackendatelie.DTO.LoginResponseDTO;
 import com.eseltech.appbackendatelie.DTO.RegisterDTO;
-import com.eseltech.appbackendatelie.modal.Usuario;
+import com.eseltech.appbackendatelie.entity.Usuario;
 import com.eseltech.appbackendatelie.repository.UsuarioRepository;
 import com.eseltech.appbackendatelie.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
