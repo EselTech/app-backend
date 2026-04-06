@@ -64,8 +64,7 @@ public class Endereco {
     public Endereco() {
     }
 
-    public Endereco(Integer id, Empresa empresa, String logradouro, String numero, String complemento, String bairro, String cidade, String estado, String cep) {
-        this.id = id;
+    public Endereco(Empresa empresa, String logradouro, String numero, String complemento, String bairro, String cidade, String estado, String cep) {
         this.empresa = empresa;
         this.logradouro = logradouro;
         this.numero = numero;

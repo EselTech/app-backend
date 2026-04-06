@@ -31,8 +31,7 @@ public class Empresa {
     public Empresa() {
     }
 
-    public Empresa(Integer id, String razaoSocial, String cnpj) {
-        this.id = id;
+    public Empresa(String razaoSocial, String cnpj) {
         this.razaoSocial = razaoSocial;
         this.cnpj = cnpj;
     }
