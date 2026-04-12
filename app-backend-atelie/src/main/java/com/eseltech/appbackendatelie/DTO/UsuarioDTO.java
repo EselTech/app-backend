@@ -9,13 +9,20 @@ import jakarta.validation.constraints.Size;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@Schema(description = "Dados para registro de novo usuário no sistema")
-public record RegisterDTO(
+@Schema(description = "DTO para representar um usuário do sistema")
+public record UsuarioDTO(
+        @Schema(
+                description = "Identificador único do usuário",
+                example = "1",
+                accessMode = Schema.AccessMode.READ_ONLY
+        )
+        Integer id,
+
         @NotNull(message = "O nome é obrigatório")
         @NotBlank(message = "O nome não pode estar em branco")
         @Size(max = 40, message = "O nome deve ter no máximo 40 caracteres")
         @Schema(
-                description = "Nome completo do usuário",
+                description = "Nome do usuário",
                 example = "João Silva",
                 requiredMode = Schema.RequiredMode.REQUIRED,
                 maxLength = 40
@@ -26,7 +33,7 @@ public record RegisterDTO(
         @NotBlank(message = "O username não pode estar em branco")
         @Size(max = 40, message = "O username deve ter no máximo 40 caracteres")
         @Schema(
-                description = "Nome de usuário para login (deve ser único)",
+                description = "Nome de usuário para login",
                 example = "joao.silva",
                 requiredMode = Schema.RequiredMode.REQUIRED,
                 maxLength = 40
@@ -45,25 +52,20 @@ public record RegisterDTO(
         )
         String email,
 
-        @NotNull(message = "A senha é obrigatória")
-        @NotBlank(message = "A senha não pode estar em branco")
-        @Size(min = 8, max = 200, message = "A senha deve conter entre 8 e 200 caracteres")
-        @Schema(
-                description = "Senha do usuário (será criptografada com BCrypt)",
-                example = "senha123",
-                requiredMode = Schema.RequiredMode.REQUIRED,
-                minLength = 8,
-                maxLength = 200
-        )
-        String senha,
-
-        @NotNull(message = "O perfil de acesso é obrigatório")
+        @NotNull(message = "A role é obrigatória")
         @Schema(
                 description = "Perfil de acesso do usuário",
                 example = "USER",
                 requiredMode = Schema.RequiredMode.REQUIRED,
                 allowableValues = {"ADMIN", "USER"}
         )
-        UserRole role
+        UserRole role,
+
+        @Schema(
+                description = "Identificador da empresa associada ao usuário",
+                example = "1"
+        )
+        Integer empresaId
 ) {
 }
+

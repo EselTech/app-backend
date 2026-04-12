@@ -7,12 +7,16 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import org.springframework.validation.annotation.Validated;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 @Validated
-@Schema(description = "DTO contendo informações do histórico de um imposto")
-public record HistoricoImpostoDTO(
+@Schema(description = "DTO para representar um imposto cadastrado no sistema")
+public record ImpostoDTO(
+        @Schema(
+                description = "Identificador único do imposto",
+                example = "1",
+                accessMode = Schema.AccessMode.READ_ONLY
+        )
+        Integer id,
+
         @NotNull(message = "O nome do imposto é obrigatório")
         @NotBlank(message = "O nome do imposto não pode estar em branco")
         @Size(max = 100, message = "O nome do imposto deve ter no máximo 100 caracteres")
@@ -24,23 +28,14 @@ public record HistoricoImpostoDTO(
         )
         String nomeImposto,
 
-        @NotNull(message = "O valor do imposto é obrigatório")
-        @Positive(message = "O valor do imposto deve ser positivo")
+        @NotNull(message = "O código SGS é obrigatório")
+        @Positive(message = "O código SGS deve ser positivo")
         @Schema(
-                description = "Valor do imposto",
-                example = "13.7500",
+                description = "Código SGS (Sistema Gerenciador de Séries) do Banco Central para consulta do valor do imposto",
+                example = "432",
                 requiredMode = Schema.RequiredMode.REQUIRED
         )
-        BigDecimal valor,
-
-        @NotNull(message = "A data de registro é obrigatória")
-        @Schema(
-                description = "Data do registro do valor",
-                example = "2024-03-06",
-                requiredMode = Schema.RequiredMode.REQUIRED,
-                type = "string",
-                format = "date"
-        )
-        LocalDate dataRegistro
+        Integer codigoSgs
 ) {
 }
+
