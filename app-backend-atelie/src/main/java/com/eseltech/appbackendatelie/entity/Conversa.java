@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import net.bytebuddy.asm.Advice;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +18,8 @@ public class Conversa {
     @Schema(description = "Identificador único da conversa", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Integer id;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
     private Empresa empresa;
 
     @Size(max = 500)

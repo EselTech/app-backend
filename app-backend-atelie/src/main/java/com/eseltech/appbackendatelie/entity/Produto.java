@@ -18,7 +18,7 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     @Schema(description = "Identificador único do usuário", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     private Empresa empresa;
@@ -45,7 +45,21 @@ public class Produto {
     @Schema(description = "Preço do produto", example = "R$12,90", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal preco;
 
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MaterialProduto> listaMateriais;
+
+    public void adicionarMaterial(Material material, BigDecimal quantidade) {
+        MaterialProduto materialProduto = new MaterialProduto();
+        materialProduto.setProduto(this);
+        materialProduto.setMaterial(material);
+        materialProduto.setQuantidade(quantidade);
+        this.listaMateriais.add(materialProduto);
+    }
+
+    public void removerMaterial(MaterialProduto materialProduto) {
+        this.listaMateriais.remove(materialProduto);
+        materialProduto.setProduto(null);
+    }
 
     public Produto() {
     }
@@ -59,11 +73,11 @@ public class Produto {
         this.listaMateriais = listaMateriais;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

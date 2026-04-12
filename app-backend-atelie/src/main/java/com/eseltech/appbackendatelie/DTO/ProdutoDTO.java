@@ -18,7 +18,7 @@ public record ProdutoDTO(
                 example = "1",
                 accessMode = Schema.AccessMode.READ_ONLY
         )
-        Integer id,
+        Long id,
 
         @NotNull(message = "O ID da empresa é obrigatório")
         @Schema(
@@ -26,7 +26,7 @@ public record ProdutoDTO(
                 example = "1",
                 requiredMode = Schema.RequiredMode.REQUIRED
         )
-        Integer empresaId,
+        Long empresaId,
 
         @NotNull(message = "O nome é obrigatório")
         @NotBlank(message = "O nome não pode estar em branco")
@@ -68,10 +68,15 @@ public record ProdutoDTO(
         )
         BigDecimal preco,
 
-        @Schema(
-                description = "Lista de IDs dos materiais do produto"
-        )
-        List<Integer> materiaisIds
+        @Schema(description = "Custo da mão de obra para produção do produto")
+        BigDecimal custoMaoDeObra,
+
+        @Schema(description = "Margem de lucro do produto")
+        BigDecimal margemLucroPercentual,
+
+        @Schema(description = "Lista de materiais e quantidades que compõem o produto")
+        List<MaterialProdutoDTO> materiais
+
 ) {
 }
 
