@@ -2,6 +2,7 @@ package com.eseltech.appbackendatelie.entity;
 
 import java.time.LocalDateTime;
 
+
 public class RegistroLog {
 
     private Integer id;

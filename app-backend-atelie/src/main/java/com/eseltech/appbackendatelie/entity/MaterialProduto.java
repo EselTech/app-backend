@@ -1,25 +1,44 @@
 package com.eseltech.appbackendatelie.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+
+@Table(name = "materialProduto")
+@Entity
+@Schema(description = "Entidade que representa a Ficha Técnica: quantidade de um material específico usado para confeccionar um produto")
 public class MaterialProduto {
 
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fkMaterial", nullable = false)
     private Material material;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fkProduto", nullable = false)
     private Produto produto;
 
-    public MaterialProduto() {
-    }
+    @Column(name = "quantidade", nullable = false, precision = 10, scale = 2)
+    @Schema(description = "Quantidade deste material necessária para produzir uma unidade do produto")
+    private BigDecimal quantidade;
 
-    public MaterialProduto(Integer id, Material material, Produto produto) {
-        this.id = id;
+    public MaterialProduto() {}
+
+    public MaterialProduto(Material material, Produto produto, BigDecimal quantidade) {
         this.material = material;
         this.produto = produto;
+        this.quantidade = quantidade;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -37,5 +56,13 @@ public class MaterialProduto {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public BigDecimal getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(BigDecimal quantidade) {
+        this.quantidade = quantidade;
     }
 }

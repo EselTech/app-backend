@@ -6,10 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
-/**
- * DTO para representar a resposta da API do Banco Central do Brasil (BCB).
- * Utilizado para mapear os dados recebidos do Sistema Gerenciador de Séries Temporais (SGS).
- */
 @Schema(description = "DTO de resposta da API do Banco Central do Brasil contendo dados de impostos")
 public class BcbDataResponseDTO {
     @JsonFormat(pattern = "dd/MM/yyyy")
