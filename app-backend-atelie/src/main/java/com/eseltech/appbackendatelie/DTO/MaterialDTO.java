@@ -18,7 +18,7 @@ public record MaterialDTO(
                 example = "1",
                 accessMode = Schema.AccessMode.READ_ONLY
         )
-        Integer id,
+        Long id,
 
         @NotNull(message = "O ID da empresa é obrigatório")
         @Schema(
@@ -26,7 +26,7 @@ public record MaterialDTO(
                 example = "1",
                 requiredMode = Schema.RequiredMode.REQUIRED
         )
-        Integer empresaId,
+        Long empresaId,
 
         @NotNull(message = "A categoria é obrigatória")
         @Schema(
