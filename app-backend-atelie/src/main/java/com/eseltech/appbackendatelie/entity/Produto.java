@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -45,6 +46,7 @@ public class Produto {
     @Schema(description = "Preço do produto", example = "R$12,90", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal preco;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MaterialProduto> listaMateriais;
 

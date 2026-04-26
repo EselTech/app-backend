@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ public class MaterialProduto {
     @JoinColumn(name = "fkMaterial", nullable = false)
     private Material material;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fkProduto", nullable = false)
     private Produto produto;
