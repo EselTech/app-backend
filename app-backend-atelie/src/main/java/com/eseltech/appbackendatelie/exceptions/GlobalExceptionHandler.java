@@ -55,6 +55,32 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+    @ExceptionHandler(ShopeeTokenNotFoundException.class)
+    public ResponseEntity<StandardError> handleShopeeTokenNotFound(ShopeeTokenNotFoundException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        StandardError error = new StandardError(
+                Instant.now(),
+                status.value(),
+                "Token da Shopee não encontrado",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(ShopeeTokenRefreshException.class)
+    public ResponseEntity<StandardError> handleShopeeTokenRefresh(ShopeeTokenRefreshException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        StandardError error = new StandardError(
+                Instant.now(),
+                status.value(),
+                "Erro ao renovar token da Shopee",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(status).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleGenericException(Exception e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
