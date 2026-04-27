@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "shopee.api")
 public class ShopeeConfig {
 
-    private String baseUrl = "https://partner.shopeemobile.com";
+    private String baseUrl = "https://openplatform.sandbox.test-stable.shopee.sg/";
 
     private Long partnerId;
 

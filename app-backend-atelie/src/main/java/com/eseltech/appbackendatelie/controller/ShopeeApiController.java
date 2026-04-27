@@ -1,11 +1,15 @@
 package com.eseltech.appbackendatelie.controller;
 
+import com.eseltech.appbackendatelie.DTO.request.AtualizarEstoqueRequestDTO;
+import com.eseltech.appbackendatelie.DTO.request.ImportarProdutosShopeeRequestDTO;
+import com.eseltech.appbackendatelie.DTO.response.ImportarProdutosShopeeResponseDTO;
 import com.eseltech.appbackendatelie.service.ShopeeApiService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,15 +80,10 @@ public class ShopeeApiController {
             @PathVariable Long shopId,
             @Parameter(description = "ID do produto na Shopee", required = true)
             @PathVariable Long itemId,
-            @Parameter(description = "Nova quantidade em estoque", required = true)
-            @RequestBody Map<String, Integer> requestBody) {
+            @Parameter(description = "Dados para atualização de estoque", required = true)
+            @Valid @RequestBody AtualizarEstoqueRequestDTO requestDTO) {
 
-        Integer stock = requestBody.get("stock");
-        if (stock == null || stock < 0) {
-            throw new IllegalArgumentException("Campo 'stock' é obrigatório e deve ser maior ou igual a zero");
-        }
-
-        Map<String, Object> response = shopeeApiService.atualizarEstoque(shopId, itemId, stock);
+        Map<String, Object> response = shopeeApiService.atualizarEstoque(shopId, itemId, requestDTO.getStock());
         return ResponseEntity.ok(response);
     }
 
@@ -127,5 +126,30 @@ public class ShopeeApiController {
         Map<String, Object> response = shopeeApiService.fazerRequisicaoPost(shopId, path, requestBody);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/importar-produtos")
+    @Operation(summary = "Importar produtos da Shopee para o banco de dados",
+               description = "Busca todos os produtos da loja Shopee, obtém os detalhes de cada produto e " +
+                            "realiza o cadastro no banco de dados local com os campos obrigatórios")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Importação concluída com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos na requisição"),
+        @ApiResponse(responseCode = "404", description = "Loja ou empresa não encontradas"),
+        @ApiResponse(responseCode = "500", description = "Erro ao importar produtos")
+    })
+    public ResponseEntity<ImportarProdutosShopeeResponseDTO> importarProdutos(
+            @Parameter(description = "Dados para importação de produtos", required = true)
+            @Valid @RequestBody ImportarProdutosShopeeRequestDTO requestDTO) {
+
+        ImportarProdutosShopeeResponseDTO response = shopeeApiService.importarProdutosParaBanco(
+            requestDTO.shopId(),
+            requestDTO.empresaId(),
+            requestDTO.pageSize()
+        );
+
+        return ResponseEntity.ok(response);
+    }
 }
+
+
 
