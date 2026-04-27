@@ -11,6 +11,8 @@ import com.eseltech.appbackendatelie.repository.EmpresaRepository;
 import com.eseltech.appbackendatelie.repository.MaterialRepository;
 import com.eseltech.appbackendatelie.repository.ProdutoRepository;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,8 @@ import java.util.List;
 
 @Service
 public class ProdutoService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ProdutoService.class);
     @Autowired
     private ProdutoRepository produtoRepository;
 
@@ -129,5 +133,49 @@ public class ProdutoService {
             custoMateriais = custoMateriais.add(custoDesteMaterial);
             produto.getListaMateriais().add(materialProduto);
         }
+    }
+
+    @Transactional
+    public Produto salvarProdutoSimplificado(Long empresaId, String nome, String descricao,
+                                              BigDecimal custo, BigDecimal preco) {
+        Empresa empresa = empresaRepository.findById(empresaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + empresaId));
+
+        Produto produto = new Produto();
+        produto.setEmpresa(empresa);
+        produto.setNome(nome);
+        produto.setDescricao(descricao);
+        produto.setCusto(custo);
+        produto.setPreco(preco);
+        produto.setListaMateriais(new ArrayList<>());
+
+        return produtoRepository.save(produto);
+    }
+
+    @Transactional
+    public Produto salvarProdutoShopee(Long empresaId, String nome, String descricao, BigDecimal preco) {
+        logger.info("salvarProdutoShopee chamado - Nome: {}, Preço recebido: {}", nome, preco);
+        
+        Empresa empresa = empresaRepository.findById(empresaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + empresaId));
+
+        BigDecimal precoFinal = (preco != null && preco.compareTo(BigDecimal.ZERO) > 0) ? preco : BigDecimal.ZERO;
+        BigDecimal custoEstimado = precoFinal.multiply(new BigDecimal("0.8"));
+
+        logger.info("Valores calculados - Preço final: {}, Custo estimado: {}", precoFinal, custoEstimado);
+
+        Produto produto = new Produto();
+        produto.setEmpresa(empresa);
+        produto.setNome(nome);
+        produto.setDescricao(descricao);
+        produto.setCusto(custoEstimado);
+        produto.setPreco(precoFinal);
+        produto.setListaMateriais(new ArrayList<>());
+
+        Produto produtoSalvo = produtoRepository.save(produto);
+        logger.info("Produto salvo - ID: {}, Preço: {}, Custo: {}", 
+                   produtoSalvo.getId(), produtoSalvo.getPreco(), produtoSalvo.getCusto());
+
+        return produtoSalvo;
     }
 }
