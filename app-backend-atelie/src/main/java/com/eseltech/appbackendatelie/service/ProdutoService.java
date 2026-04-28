@@ -200,9 +200,8 @@ public class ProdutoService {
         produto.setPreco(dto.preco());
 
         produto.getListaMateriais().clear();
-        BigDecimal custoMateriais = BigDecimal.ZERO;
 
-        processarMateriais(dto, produto, custoMateriais);
+        BigDecimal custoMateriais = processarMateriais(dto, produto);
 
         ValoresCalculados valores = calcularPrecificacao(custoMateriais, dto.custoMaoDeObra(), dto.margemLucroPercentual());
 
