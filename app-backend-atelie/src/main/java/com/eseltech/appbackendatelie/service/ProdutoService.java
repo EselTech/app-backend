@@ -75,9 +75,8 @@ public class ProdutoService {
         produto.setPreco(dto.preco());
 
         produto.setListaMateriais(new ArrayList<>());
-        BigDecimal custoMateriais = BigDecimal.ZERO;
 
-        processarMateriais(dto, produto, custoMateriais);
+        BigDecimal custoMateriais = processarMateriais(dto, produto);
 
         ValoresCalculados valores = calcularPrecificacao(custoMateriais, dto.custoMaoDeObra(), dto.margemLucroPercentual());
 
@@ -89,22 +88,30 @@ public class ProdutoService {
 
     private ValoresCalculados calcularPrecificacao(BigDecimal custoMateriais, BigDecimal custoMaoDeObra, BigDecimal margemLucroPercentual) {
 
-        BigDecimal custoTotalBase = custoMateriais.add(custoMaoDeObra);
+        BigDecimal custoMaoDeObraFinal = (custoMaoDeObra != null) ? custoMaoDeObra : BigDecimal.ZERO;
+        BigDecimal margemLucroFinal = (margemLucroPercentual != null) ? margemLucroPercentual : BigDecimal.ZERO;
 
-        List<HistoricoImpostoDTO> impostos = impostoService.buscarTodos();
+        BigDecimal custoTotalBase = custoMateriais.add(custoMaoDeObraFinal);
 
-        BigDecimal taxaIpca = impostos.stream()
-                .filter(i -> i.nomeImposto().contains("IPCA"))
-                .map(HistoricoImpostoDTO::valor)
-                .findFirst()
-                .orElse(BigDecimal.ZERO);
+        BigDecimal taxaIpca = BigDecimal.ZERO;
+        try {
+            List<HistoricoImpostoDTO> impostos = impostoService.buscarTodos();
+            if (impostos != null && !impostos.isEmpty()) {
+                taxaIpca = impostos.stream()
+                        .filter(i -> i.nomeImposto().contains("IPCA"))
+                        .map(HistoricoImpostoDTO::valor)
+                        .findFirst()
+                        .orElse(BigDecimal.ZERO);
+            }
+        } catch (Exception e) {
+        }
 
         BigDecimal multiplicadorImposto = taxaIpca.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP);
         BigDecimal valorImpostos = custoTotalBase.multiply(multiplicadorImposto);
 
         BigDecimal custoTotalComImpostos = custoTotalBase.add(valorImpostos);
 
-        BigDecimal multiplicadorLucro = margemLucroPercentual.divide(new BigDecimal("100")).add(BigDecimal.ONE);
+        BigDecimal multiplicadorLucro = margemLucroFinal.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP).add(BigDecimal.ONE);
         BigDecimal precoSugeridoDeVenda = custoTotalComImpostos.multiply(multiplicadorLucro);
 
         return new ValoresCalculados(
@@ -113,10 +120,11 @@ public class ProdutoService {
         );
     }
 
-    // Record interno apenas para transitar os dois dados pelo service
     private record ValoresCalculados(BigDecimal custoTotalComImpostos, BigDecimal precoSugeridoDeVenda) {}
 
-    private void processarMateriais(ProdutoDTO dto, Produto produto, BigDecimal custoMateriais) {
+    private BigDecimal processarMateriais(ProdutoDTO dto, Produto produto) {
+        BigDecimal custoMateriais = BigDecimal.ZERO;
+
         for (MaterialProdutoDTO mpDTO : dto.materiais()) {
             Material material = materialRepository.findById(mpDTO.materialId())
                     .orElseThrow(() -> new ResourceNotFoundException("Material não encontrado"));
@@ -133,6 +141,8 @@ public class ProdutoService {
             custoMateriais = custoMateriais.add(custoDesteMaterial);
             produto.getListaMateriais().add(materialProduto);
         }
+
+        return custoMateriais;
     }
 
     @Transactional
