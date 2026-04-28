@@ -23,7 +23,7 @@ public class MaterialController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Material> getById(Long id) {
+    public ResponseEntity<Material> getById(@PathVariable Long id) {
         return ResponseEntity.ok(materialService.findById(id));
     }
 
