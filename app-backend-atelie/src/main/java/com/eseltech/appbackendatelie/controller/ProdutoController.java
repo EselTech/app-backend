@@ -30,12 +30,12 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> getById(Long id) {
+    public ResponseEntity<Produto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(produtoService.findById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         produtoService.removerProduto(id);
         return ResponseEntity.noContent().build();
     }
