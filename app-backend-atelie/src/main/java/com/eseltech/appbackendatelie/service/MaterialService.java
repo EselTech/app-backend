@@ -59,4 +59,19 @@ public class MaterialService {
 
         return materialRepository.save(material);
     }
+
+    @Transactional
+    public Material atualizarMaterial(Long id, MaterialDTO dto) {
+        Material material = materialRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Material não encontrado com id: " + id));
+        Empresa empresa = empresaRepository.findById(dto.empresaId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
+
+        material.setNome(dto.nome());
+        material.setEmpresa(empresa);
+        material.setCategoria(dto.categoria());
+        material.setDescricao(dto.descricao());
+        material.setQtdEstoque(dto.qtdEstoque());
+        material.setPreco(dto.preco());
+
+        return materialRepository.save(material);
+    }
 }
