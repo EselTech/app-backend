@@ -38,4 +38,9 @@ public class MaterialController {
         return ResponseEntity.ok(materialService.salvarMaterial(materialDTO));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Material> updateMaterial(@PathVariable Long id, @RequestBody @Valid MaterialDTO materialDTO) {
+        return ResponseEntity.ok(materialService.atualizarMaterial(id, materialDTO));
+    }
+
 }

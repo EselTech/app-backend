@@ -188,4 +188,27 @@ public class ProdutoService {
 
         return produtoSalvo;
     }
+
+    @Transactional
+    public Produto atualizarProduto(Long id, ProdutoDTO dto) {
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + id));
+        Empresa empresa = empresaRepository.findById(dto.empresaId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
+
+        produto.setNome(dto.nome());
+        produto.setEmpresa(empresa);
+        produto.setDescricao(dto.descricao());
+        produto.setPreco(dto.preco());
+
+        produto.getListaMateriais().clear();
+        BigDecimal custoMateriais = BigDecimal.ZERO;
+
+        processarMateriais(dto, produto, custoMateriais);
+
+        ValoresCalculados valores = calcularPrecificacao(custoMateriais, dto.custoMaoDeObra(), dto.margemLucroPercentual());
+
+        produto.setCusto(valores.custoTotalComImpostos());
+        produto.setPreco(valores.precoSugeridoDeVenda());
+
+        return produtoRepository.save(produto);
+    }
 }

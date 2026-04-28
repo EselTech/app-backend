@@ -50,4 +50,9 @@ public class ProdutoController {
     public ResponseEntity<Produto> saveProduto(@RequestBody @Valid ProdutoDTO produto) {
         return ResponseEntity.ok(produtoService.salvarProduto(produto));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Produto> updateProduto(@PathVariable Long id, @RequestBody @Valid ProdutoDTO produto) {
+        return ResponseEntity.ok(produtoService.atualizarProduto(id, produto));
+    }
 }
