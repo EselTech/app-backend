@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,11 +188,7 @@ public class AuthenticationController {
     @Operation(
             summary = "Registrar novo usuário",
             description = """
-                    Cadastra um novo usuário no sistema.
-                    
-                    **Restrições de acesso:**
-                    - Este endpoint requer autenticação com token JWT (via cookie HttpOnly)
-                    - Apenas usuários com perfil **ADMIN** podem registrar novos usuários
+                    Cadastra um novo usuário no sistema. Este endpoint é público e não requer autenticação.
                     
                     **Perfis disponíveis:**
                     - `ADMIN`: Acesso total ao sistema, incluindo registro de usuários
@@ -202,8 +197,7 @@ public class AuthenticationController {
                     **Validações:**
                     - O username deve ser único no sistema
                     - A senha será criptografada com BCrypt antes de ser armazenada
-                    """,
-            security = @SecurityRequirement(name = "bearerAuth")
+                    """
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -227,16 +221,6 @@ public class AuthenticationController {
                                     value = "Usuário já existe"
                             )
                     )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Não autenticado - Token JWT não fornecido ou inválido",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Acesso negado - Apenas administradores podem registrar usuários",
-                    content = @Content
             )
     })
     @PostMapping("/registrar")
