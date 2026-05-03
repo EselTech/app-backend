@@ -139,6 +139,7 @@ public class ShopeeTokenService {
     @Transactional
     public ShopeeTokenInfo saveTokenInfo(ShopeeTokenInfo tokenInfo) {
         logger.info("Salvando credenciais para shopId: {}", tokenInfo.getShopId());
+        tokenInfo.setExpiresAt(LocalDateTime.now().plusHours(4));
         return tokenRepository.save(tokenInfo);
     }
 
