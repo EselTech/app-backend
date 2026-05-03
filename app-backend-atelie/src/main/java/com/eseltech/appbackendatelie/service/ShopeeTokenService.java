@@ -115,7 +115,7 @@ public class ShopeeTokenService {
             tokenInfo.setAccessToken(response.getAccessToken());
             tokenInfo.setRefreshToken(response.getRefreshToken());
 
-            LocalDateTime newExpiresAt = LocalDateTime.now().plusSeconds(response.getExpireIn());
+            LocalDateTime newExpiresAt = LocalDateTime.now().plusHours(4);
             tokenInfo.setExpiresAt(newExpiresAt);
 
             tokenRepository.save(tokenInfo);
