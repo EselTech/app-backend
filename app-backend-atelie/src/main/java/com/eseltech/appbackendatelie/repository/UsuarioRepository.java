@@ -3,6 +3,7 @@ package com.eseltech.appbackendatelie.repository;
 import com.eseltech.appbackendatelie.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +13,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Usuario findByNomeAndSenha(String nome, String senha);
 
     UserDetails findByUsername(String username);
+
+    @Query("""
+            SELECT u.id FROM Usuario u WHERE u.username = :username
+            """)
+    Integer findIdByUsername(@Param("username") String username);
+
 }
