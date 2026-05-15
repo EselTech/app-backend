@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
@@ -15,6 +16,7 @@ public class ProdutosPedido {
     @Schema(description = "Identificador único do produtoPedido", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Integer id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "pedido_id")
     private Pedido pedido;
