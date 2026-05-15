@@ -53,7 +53,6 @@ public class Pedido {
     @Schema(description = "Prazo do pedido", example = "06/04/2024", requiredMode = Schema.RequiredMode.REQUIRED, maxLength = 50)
     private LocalDate prazo;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ProdutosPedido> listaProdutos;
 
