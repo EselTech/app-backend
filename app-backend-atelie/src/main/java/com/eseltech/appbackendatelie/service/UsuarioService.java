@@ -4,6 +4,7 @@ import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
 import com.eseltech.appbackendatelie.DTO.RegisterDTO;
 import com.eseltech.appbackendatelie.DTO.TokenPairDTO;
 import com.eseltech.appbackendatelie.entity.Usuario;
+import com.eseltech.appbackendatelie.exceptions.ResourceNotFoundException;
 import com.eseltech.appbackendatelie.repository.UsuarioRepository;
 import com.eseltech.appbackendatelie.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,10 @@ public class UsuarioService {
 
     public List<Usuario> buscarTodos() {
         return usuarioRepository.findAll();
+    }
+
+    public Usuario buscarUsuarioPorId(Long id) {
+        return usuarioRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }
 
     public void atualizarUsuario(Usuario usuario, Long id) {

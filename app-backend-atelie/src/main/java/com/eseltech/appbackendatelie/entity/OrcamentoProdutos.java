@@ -1,43 +1,42 @@
 package com.eseltech.appbackendatelie.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 
-@Table(name = "produtosPedido")
+@Table(name = "orcamentoProdutos")
 @Entity
-@Schema(description = "Entidade que representa uma lista de produtos dentro de um pedido cadastrado no sistema")
-public class ProdutosPedido {
+@Schema(description = "Entidade que representa uma lista de produtos dentro de um orcamento cadastrado no sistema")
+public class OrcamentoProdutos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    @Schema(description = "Identificador único do produtoPedido", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "Identificador único do orcamentoProdutos", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Integer id;
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "pedido_id")
-    private Pedido pedido;
 
     @ManyToOne
     @JoinColumn(name = "produto_id")
     private Produto produto;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "orcamento_id")
+    private Orcamento orcamento;
 
     @Positive
     @Column(name = "qtdProduto", nullable = false)
     @Schema(description = "Quantidade do produto na lista", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Integer qtdProduto;
 
-    public ProdutosPedido() {
+    public OrcamentoProdutos() {
     }
 
-    public ProdutosPedido(Integer id, Pedido pedido, Produto produto, Integer qtdProduto) {
+    public OrcamentoProdutos(Integer id, Produto produto, Orcamento orcamento, Integer qtdProduto) {
         this.id = id;
-        this.pedido = pedido;
         this.produto = produto;
+        this.orcamento = orcamento;
         this.qtdProduto = qtdProduto;
     }
 
@@ -49,20 +48,20 @@ public class ProdutosPedido {
         this.id = id;
     }
 
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
-
     public Produto getProduto() {
         return produto;
     }
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public Orcamento getOrcamento() {
+        return orcamento;
+    }
+
+    public void setOrcamento(Orcamento orcamento) {
+        this.orcamento = orcamento;
     }
 
     public Integer getQtdProduto() {

@@ -38,6 +38,11 @@ public class UsuarioController {
                     content = @Content
             )
     })
+    @GetMapping("/find-by-id/{id}")
+    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.buscarUsuarioPorId(id));
+    }
+
     @GetMapping("/find-all")
     public ResponseEntity<List<Usuario>> buscarTodos() {
         return ResponseEntity.ok(usuarioService.buscarTodos());

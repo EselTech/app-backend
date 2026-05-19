@@ -4,6 +4,7 @@ import com.eseltech.appbackendatelie.DTO.AuthResponseDTO;
 import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
 import com.eseltech.appbackendatelie.DTO.RegisterDTO;
 import com.eseltech.appbackendatelie.DTO.TokenPairDTO;
+import com.eseltech.appbackendatelie.repository.UsuarioRepository;
 import com.eseltech.appbackendatelie.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,6 +38,9 @@ public class AuthenticationController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Operation(
             summary = "Realizar login",
@@ -112,6 +116,7 @@ public class AuthenticationController {
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
             headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+            headers.add("USERID", usuarioRepository.findIdByUsername(authenticationDTO.username()).toString());
 
             return ResponseEntity.ok()
                     .headers(headers)
