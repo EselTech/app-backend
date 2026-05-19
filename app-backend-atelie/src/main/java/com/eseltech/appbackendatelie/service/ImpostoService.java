@@ -14,15 +14,15 @@ import java.util.List;
 
 @Service
 public class ImpostoService {
-    @Autowired
-    private ImpostoRepository impostoRepository;
+    private final ImpostoRepository impostoRepository;
     private final BcbService bcbService;
     private final HistoricoImpostoRepository historicoImpostoRepository;
 
-    public ImpostoService(BcbService bcbService, HistoricoImpostoRepository HistoricoImpostoRepository) {
+    @Autowired
+    public ImpostoService(ImpostoRepository impostoRepository, BcbService bcbService, HistoricoImpostoRepository historicoImpostoRepository) {
+        this.impostoRepository = impostoRepository;
         this.bcbService = bcbService;
-
-        this.historicoImpostoRepository = HistoricoImpostoRepository;
+        this.historicoImpostoRepository = historicoImpostoRepository;
     }
 
     public void atualizarImpostos() {
