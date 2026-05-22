@@ -30,12 +30,12 @@ public class MaterialService {
         return lista;
     }
 
-    public Material findById(Long id) {
+    public Material findById(Integer id) {
         Material material = materialRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Material não encontrado com id: " + id));
         return material;
     }
 
-    public void removerMaterial(Long id) {
+    public void removerMaterial(Integer id) {
         materialRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Material não encontrado com id: " + id));
         materialRepository.deleteById(id);
     }
@@ -56,7 +56,7 @@ public class MaterialService {
     }
 
     @Transactional
-    public Material atualizarMaterial(Long id, MaterialDTO dto) {
+    public Material atualizarMaterial(Integer id, MaterialDTO dto) {
         Material material = materialRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Material não encontrado com id: " + id));
         Empresa empresa = empresaRepository.findById(dto.empresaId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
 

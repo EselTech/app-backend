@@ -86,7 +86,7 @@ public class ProdutoController {
             )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> getById(@PathVariable Long id) {
+    public ResponseEntity<Produto> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(produtoService.findById(id));
     }
 
@@ -113,7 +113,7 @@ public class ProdutoController {
             )
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         produtoService.removerProduto(id);
         return ResponseEntity.noContent().build();
     }
@@ -220,7 +220,7 @@ public class ProdutoController {
             )
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> updateProduto(@PathVariable Long id, @RequestBody @Valid ProdutoDTO produto) {
+    public ResponseEntity<Produto> updateProduto(@PathVariable Integer id, @RequestBody @Valid ProdutoDTO produto) {
         return ResponseEntity.ok(produtoService.atualizarProduto(id, produto));
     }
 }

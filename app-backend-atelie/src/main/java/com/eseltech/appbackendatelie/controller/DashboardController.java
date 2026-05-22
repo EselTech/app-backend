@@ -17,7 +17,7 @@ public class DashboardController {
     private DashboardService service;
 
     @GetMapping
-    public ResponseEntity<DashboardResponseDTO> getDashboard(@RequestParam Long empresaId) {
+    public ResponseEntity<DashboardResponseDTO> getDashboard(@RequestParam Integer empresaId) {
         try {
             // Agora passamos o ID recebido na URL para o Service
             DashboardResponseDTO dadosDaDashboard = service.montarDashboard(empresaId);

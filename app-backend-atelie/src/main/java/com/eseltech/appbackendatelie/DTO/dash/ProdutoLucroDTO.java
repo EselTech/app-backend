@@ -9,7 +9,7 @@ public record ProdutoLucroDTO(
         BigDecimal custo,
         BigDecimal preco,
         BigDecimal lucroUnitario,
-        Double margemLucroPercentual,
-        Integer totalVendidoMes,
+        BigDecimal margemLucroPercentual,
+        BigDecimal totalVendidoMes,
         BigDecimal lucroTotalMes
 ) {}

@@ -6,10 +6,9 @@ import java.math.BigDecimal;
 public record ProdutoKpiDTO(
         Long id,
         String nome,
-        String descricao,
         BigDecimal preco,
-        Integer totalPedidos,
-        Integer totalUnidadesVendidas,
+        Long totalPedidos,
+        BigDecimal totalUnidadesVendidas,
         BigDecimal receitaTotal,
-        Double mediaUnidadesPorPedido
+        BigDecimal mediaUnidadesPorPedido
 ) {}

@@ -52,13 +52,13 @@ public class ProdutoService {
         return lista;
     }
 
-    public Produto findById(Long id) {
+    public Produto findById(Integer id) {
         Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + id));
 
         return produto;
     }
 
-    public void removerProduto(Long id) {
+    public void removerProduto(Integer id) {
         Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + id));
 
         produtoRepository.deleteById(id);
@@ -190,7 +190,7 @@ public class ProdutoService {
     }
 
     @Transactional
-    public Produto atualizarProduto(Long id, ProdutoDTO dto) {
+    public Produto atualizarProduto(Integer id, ProdutoDTO dto) {
         Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + id));
         Empresa empresa = empresaRepository.findById(dto.empresaId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
 

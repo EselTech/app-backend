@@ -81,7 +81,7 @@ public class MaterialController {
             )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Material> getById(@PathVariable Long id) {
+    public ResponseEntity<Material> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(materialService.findById(id));
     }
 
@@ -108,7 +108,7 @@ public class MaterialController {
             )
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         materialService.removerMaterial(id);
         return ResponseEntity.noContent().build();
     }
@@ -126,7 +126,7 @@ public class MaterialController {
                             schema = @Schema(implementation = Material.class),
                             examples = @ExampleObject(
                                     name = "Material cadastrado",
-                                    value = "{\"id\":1,\"empresa\":{\"id\":1},\"categoria\":\"CENTIMETRO\",\"nome\":\"Papel cartão vermelho\",\"descricao\":\"Papel cartão da cor vermelha geralmente usado para fazer decorações\",\"qtdEstoque\":50.00,\"preco\":12.90}"
+                                    value = "{\"id\":1,\"empresa\":{\"id\":1},\"categoria\":\"CENTIMETRO\",\"nome\":\"Papel cartão vermelho\",\"descricao\":\"Papel cartão da cor vermelha geralmente usado para fazer decorações\",\"qtd_estoque\":50.00,\"preco\":12.90}"
                             )
                     )
             ),
@@ -184,7 +184,7 @@ public class MaterialController {
             )
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Material> updateMaterial(@PathVariable Long id, @RequestBody @Valid MaterialDTO materialDTO) {
+    public ResponseEntity<Material> updateMaterial(@PathVariable Integer id, @RequestBody @Valid MaterialDTO materialDTO) {
         return ResponseEntity.ok(materialService.atualizarMaterial(id, materialDTO));
     }
 

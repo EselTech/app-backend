@@ -20,7 +20,7 @@ public class DashboardService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
-    public DashboardResponseDTO montarDashboard(Long empresaId) {
+    public DashboardResponseDTO montarDashboard(Integer empresaId) {
 
         // 1. Materiais
         MaterialKpiDTO materialMais = materialRepository.buscarMaterialMaisUtilizado(empresaId);

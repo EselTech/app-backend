@@ -10,5 +10,5 @@ public record MaterialEstoqueDTO(
         BigDecimal preco,
         String categoria,
         BigDecimal consumoUltimoMes,
-        Double margemEstoquePercentual
+        BigDecimal margemEstoquePercentual
 ) {}

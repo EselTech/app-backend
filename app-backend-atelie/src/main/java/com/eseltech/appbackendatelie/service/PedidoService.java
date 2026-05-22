@@ -71,7 +71,7 @@ public class PedidoService {
 
     private void processarProdutos(PedidoDTO dto, Pedido pedido) {
         for (ProdutosPedidoDTO ppDTO : dto.listaProdutos()) {
-            Produto produto = produtoRepository.findById(ppDTO.produtoId().longValue())
+            Produto produto = produtoRepository.findById(ppDTO.produtoId())
                     .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + ppDTO.produtoId()));
 
             ProdutosPedido produtosPedido = new ProdutosPedido();
