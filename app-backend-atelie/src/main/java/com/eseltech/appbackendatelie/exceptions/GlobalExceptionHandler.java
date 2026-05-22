@@ -81,6 +81,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(error);
     }
 
+    @ExceptionHandler(GeminiNotWorkingException.class)
+    public ResponseEntity<StandardError> handleGeminiNotWorking(GeminiNotWorkingException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        StandardError error = new StandardError(
+                Instant.now(),
+                status.value(),
+                "Erro ao consultar Gemini",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(status).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleGenericException(Exception e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

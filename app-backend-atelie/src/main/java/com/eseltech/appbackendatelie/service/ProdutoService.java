@@ -41,6 +41,9 @@ public class ProdutoService {
     @Autowired
     private ImpostoService impostoService;
 
+    @Autowired
+    private TwilioService twilioService;
+
 
     public List<Produto> findAll() {
         List<Produto> lista = produtoRepository.findAll();
@@ -82,6 +85,8 @@ public class ProdutoService {
 
         produto.setCusto(valores.custoTotalComImpostos());
         produto.setPreco(valores.precoSugeridoDeVenda());
+
+        twilioService.sendMessage("Novo produto criado: " + produto.getNome() + " - Preço: " + produto.getPreco());
 
         return produtoRepository.save(produto);
     }

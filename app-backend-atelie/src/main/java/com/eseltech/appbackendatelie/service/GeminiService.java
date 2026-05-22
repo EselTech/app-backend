@@ -1,6 +1,8 @@
 package com.eseltech.appbackendatelie.service;
 
 
+import com.eseltech.appbackendatelie.DTO.response.gemini.GeminiResponseDTO;
+import com.eseltech.appbackendatelie.exceptions.GeminiNotWorkingException;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,7 +16,20 @@ public class GeminiService {
     private final String API_KEY = "AIzaSyDcMx8SaQgnVSTqcA8p6daOX792RUkf2BM";
     private final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
 
-    public String consultar(String prompt) {
+    public String perguntar(String prompt) {
+        if (prompt == null || prompt.trim().isEmpty()) {
+            throw new IllegalArgumentException("A pergunta não pode ser nula ou vazia.");
+        }
+        GeminiResponseDTO response = consultar(prompt);
+
+        if (response == null) {
+            throw new GeminiNotWorkingException("Não foi possivel obter uma resposta do Gemini");
+        }
+
+        return response.getResposta();
+    }
+
+    public GeminiResponseDTO consultar(String prompt) {
 
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> part = Map.of("text", prompt);
@@ -27,12 +42,12 @@ public class GeminiService {
         HttpEntity<Map<String, Object>> entity =
                 new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> response =
+        ResponseEntity<GeminiResponseDTO> response =
                 restTemplate.exchange(
                         API_URL + API_KEY,
                         HttpMethod.POST,
                         entity,
-                        String.class
+                        GeminiResponseDTO.class
                 );
 
         return response.getBody();

@@ -36,6 +36,7 @@ public class DashboardService {
         List<ProdutoCrescimentoDTO> maiorCrescimento = pedidoRepository.buscarMaiorCrescimento(empresaId);
         List<ProdutoCrescimentoDTO> menorCrescimento = pedidoRepository.buscarMenorCrescimento(empresaId);
 
+
         return new DashboardResponseDTO(
                 materialMais,
                 materialMenos,
