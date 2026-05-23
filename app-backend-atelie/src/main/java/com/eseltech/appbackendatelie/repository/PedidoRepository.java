@@ -1,11 +1,15 @@
 package com.eseltech.appbackendatelie.repository;
 
+import com.eseltech.appbackendatelie.DTO.home.PedidoPorStatusDTO;
+import com.eseltech.appbackendatelie.DTO.home.ReceitaAnualPorMesDTO;
 import com.eseltech.appbackendatelie.entity.Pedido;
 import com.eseltech.appbackendatelie.DTO.dash.ProdutoCrescimentoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -42,4 +46,74 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
         ORDER BY taxa_crescimento_percentual ASC LIMIT 10
     """, nativeQuery = true)
     List<ProdutoCrescimentoDTO> buscarMenorCrescimento(@Param("empresaId") Integer empresaId);
+
+    @Query(value = """
+    SELECT COALESCE(SUM(p.valor), 0)
+    FROM pedido p
+    WHERE p.empresa_id = :empresaId 
+      AND p.status = 'shipped' 
+      AND p.prazo >= DATE_FORMAT(CURDATE(), '%Y-%m-01') 
+      AND p.prazo <= CURDATE()
+""", nativeQuery = true)
+    BigDecimal somarReceitaMesAtual(@Param("empresaId") Integer empresaId);
+
+    @Query(value = """
+    SELECT COALESCE(SUM(pp.qtdProduto * p.custo), 0)
+    FROM produtos_pedido pp
+    JOIN pedido ped ON pp.pedido_id = ped.id
+    JOIN produto p ON pp.produto_id = p.id
+    WHERE ped.empresa_id = :empresaId
+      AND ped.status IN ('shipped', 'ongoing', 'late')
+      AND ped.prazo >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+      AND ped.prazo < DATE_FORMAT(CURDATE(), '%Y-%m-01') + INTERVAL 1 MONTH
+""", nativeQuery = true)
+    BigDecimal somarDespesasMesAtual(@Param("empresaId") Integer empresaId);
+
+    @Query(value = """
+    SELECT 
+        (COALESCE(SUM(ped.valor), 0) - COALESCE(SUM(pp.qtdProduto * p.custo), 0)) AS lucro
+    FROM pedido ped
+    LEFT JOIN produtos_pedido pp ON ped.id = pp.pedido_id
+    LEFT JOIN produto p ON pp.produto_id = p.id
+    WHERE ped.empresa_id = :empresaId
+      AND ped.status IN ('shipped', 'ongoing', 'late')
+      AND ped.prazo >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+      AND ped.prazo < DATE_FORMAT(CURDATE(), '%Y-%m-01') + INTERVAL 1 MONTH
+""", nativeQuery = true)
+    BigDecimal somarLucroMesAtual(@Param("empresaId") Integer empresaId);
+
+    @Query(value = """
+    SELECT COALESCE(SUM(p.valor), 0) 
+    FROM pedido p 
+    WHERE p.empresa_id = :empresaId 
+      AND p.status IN ('shipped', 'ongoing', 'open', 'late')
+      AND p.prazo > CURDATE()
+      AND p.prazo < DATE_FORMAT(CURDATE(), '%Y-%m-01') + INTERVAL 1 MONTH
+""", nativeQuery = true)
+    BigDecimal somarValorAReceberMesAtual(@Param("empresaId") Integer empresaId);
+
+    @Query(value = """
+    SELECT 
+        status, 
+        COUNT(id) AS total
+    FROM pedido
+    WHERE empresa_id = :empresaId
+      AND prazo >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+      AND prazo < DATE_FORMAT(CURDATE(), '%Y-%m-01') + INTERVAL 1 MONTH
+    GROUP BY status
+""", nativeQuery = true)
+    List<PedidoPorStatusDTO> contarPedidosPorStatus(@Param("empresaId") Integer empresaId);
+
+    @Query(value = """
+    SELECT 
+        MONTH(ped.prazo) AS mes, 
+        COALESCE(SUM(ped.valor), 0) AS total
+    FROM pedido ped
+    WHERE ped.empresa_id = :empresaId
+      AND YEAR(ped.prazo) = YEAR(CURDATE())
+      AND ped.status = 'shipped'
+    GROUP BY MONTH(ped.prazo)
+    ORDER BY mes ASC
+""", nativeQuery = true)
+    List<ReceitaAnualPorMesDTO> buscarReceitaAnual(@Param("empresaId") Integer empresaId);
 }

@@ -1,7 +1,6 @@
 package com.eseltech.appbackendatelie.DTO.dash;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 // Para KPIs de Material
