@@ -103,6 +103,15 @@ public class PedidoService {
 
         return pedidoRepository.save(pedido);
     }
+
+    public Pedido atualizarStatusPedido(Integer id, String status) {
+
+        Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com id: " + id));
+
+        pedido.setStatus(status);
+
+        return pedidoRepository.save(pedido);
+    }
 }
 
 

@@ -53,7 +53,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     WHERE p.empresa_id = :empresaId 
       AND p.status = 'shipped' 
       AND p.prazo >= DATE_FORMAT(CURDATE(), '%Y-%m-01') 
-      AND p.prazo <= CURDATE()
+      AND p.prazo <= DATE_FORMAT(CURDATE(), '%Y-%m-01') + INTERVAL 1 MONTH
 """, nativeQuery = true)
     BigDecimal somarReceitaMesAtual(@Param("empresaId") Integer empresaId);
 
@@ -86,7 +86,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     SELECT COALESCE(SUM(p.valor), 0) 
     FROM pedido p 
     WHERE p.empresa_id = :empresaId 
-      AND p.status IN ('shipped', 'ongoing', 'open', 'late')
+      AND p.status IN ('ongoing', 'open', 'late')
       AND p.prazo > CURDATE()
       AND p.prazo < DATE_FORMAT(CURDATE(), '%Y-%m-01') + INTERVAL 1 MONTH
 """, nativeQuery = true)
