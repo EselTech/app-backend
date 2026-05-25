@@ -58,7 +58,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     BigDecimal somarReceitaMesAtual(@Param("empresaId") Integer empresaId);
 
     @Query(value = """
-    SELECT COALESCE(SUM(pp.qtdProduto * p.custo), 0)
+    SELECT COALESCE(SUM(pp.qtd_produto * p.custo), 0)
     FROM produtos_pedido pp
     JOIN pedido ped ON pp.pedido_id = ped.id
     JOIN produto p ON pp.produto_id = p.id
@@ -71,7 +71,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
 
     @Query(value = """
     SELECT 
-        (COALESCE(SUM(ped.valor), 0) - COALESCE(SUM(pp.qtdProduto * p.custo), 0)) AS lucro
+        (COALESCE(SUM(ped.valor), 0) - COALESCE(SUM(pp.qtd_produto * p.custo), 0)) AS lucro
     FROM pedido ped
     LEFT JOIN produtos_pedido pp ON ped.id = pp.pedido_id
     LEFT JOIN produto p ON pp.produto_id = p.id
