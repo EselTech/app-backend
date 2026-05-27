@@ -144,7 +144,7 @@ public class NotificacaoController {
     })
     @PostMapping
     public ResponseEntity<Notificacao> saveNotificacao(@RequestBody @Valid NotificacaoDTO notificacaoDTO) {
-        return ResponseEntity.ok(notificacaoService.salvarNotificacao(notificacaoDTO));
+        return ResponseEntity.ok(notificacaoService.salvarNotificacao(notificacaoDTO.toEntity()));
     }
 
     @Operation(
@@ -185,7 +185,7 @@ public class NotificacaoController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<Notificacao> updateNotificacao(@PathVariable Integer id, @RequestBody @Valid NotificacaoDTO notificacaoDTO) {
-        return ResponseEntity.ok(notificacaoService.atualizarNotificacao(id, notificacaoDTO));
+        return ResponseEntity.ok(notificacaoService.atualizarNotificacao(id, notificacaoDTO.toEntity()));
     }
 }
 

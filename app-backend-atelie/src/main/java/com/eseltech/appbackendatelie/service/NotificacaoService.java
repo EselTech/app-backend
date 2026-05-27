@@ -41,29 +41,33 @@ public class NotificacaoService {
     }
 
     @Transactional
-    public Notificacao salvarNotificacao(NotificacaoDTO dto) {
-        Empresa empresa = empresaRepository.findById(dto.empresaId().longValue()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
+    public Notificacao salvarNotificacao(Notificacao notificacaoEdit) {
+        Empresa empresa = empresaRepository.findById(notificacaoEdit.getEmpresa().getId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + notificacaoEdit.getEmpresa().getId()));
 
         Notificacao notificacao = new Notificacao();
         notificacao.setEmpresa(empresa);
-        notificacao.setTopico(dto.topico());
-        notificacao.setMensagem(dto.mensagem());
-        notificacao.setDtEnvio(dto.dtEnvio());
+        notificacao.setTopico(notificacaoEdit.getTopico());
+        notificacao.setMensagem(notificacaoEdit.getMensagem());
+        notificacao.setDtEnvio(notificacaoEdit.getDtEnvio());
 
         return notificacaoRepository.save(notificacao);
     }
 
     @Transactional
-    public Notificacao atualizarNotificacao(Integer id, NotificacaoDTO dto) {
+    public Notificacao atualizarNotificacao(Integer id, Notificacao notificacaoEdit) {
         Notificacao notificacao = notificacaoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Notificação não encontrada com id: " + id));
-        Empresa empresa = empresaRepository.findById(dto.empresaId().longValue()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
+        Empresa empresa = empresaRepository.findById(notificacaoEdit.getEmpresa().getId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + notificacaoEdit.getEmpresa().getId()));
 
         notificacao.setEmpresa(empresa);
-        notificacao.setTopico(dto.topico());
-        notificacao.setMensagem(dto.mensagem());
-        notificacao.setDtEnvio(dto.dtEnvio());
+        notificacao.setTopico(notificacaoEdit.getTopico());
+        notificacao.setMensagem(notificacaoEdit.getMensagem());
+        notificacao.setDtEnvio(notificacaoEdit.getDtEnvio());
 
         return notificacaoRepository.save(notificacao);
+    }
+
+    public List<Notificacao> buscarNotificacoesAEnviar() {
+        return notificacaoRepository.findNotificacoesAEnviar();
     }
 }
 
