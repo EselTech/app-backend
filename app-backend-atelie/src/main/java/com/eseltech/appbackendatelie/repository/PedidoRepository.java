@@ -127,7 +127,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
             CAST(COALESCE(SUM(CASE WHEN MONTH(p.prazo) BETWEEN 10 AND 12 THEN pp.qtd_produto ELSE 0 END), 0) AS DECIMAL(12,2)) AS trimestre4
         FROM pedido p
         INNER JOIN produtos_pedido pp ON p.id = pp.pedido_id
-        WHERE p.fk_empresa = :empresaId 
+        WHERE p.empresa_id = :empresaId 
           AND p.status = 'shipped'
           AND YEAR(p.prazo) = YEAR(CURDATE())
     """, nativeQuery = true)
