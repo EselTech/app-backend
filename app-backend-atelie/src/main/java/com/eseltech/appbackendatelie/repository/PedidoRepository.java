@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.repository;
 
+import com.eseltech.appbackendatelie.DTO.dash.ProdutosVendidosTrimestreDTO;
 import com.eseltech.appbackendatelie.DTO.home.PedidoPorStatusDTO;
 import com.eseltech.appbackendatelie.DTO.home.ReceitaAnualPorMesDTO;
 import com.eseltech.appbackendatelie.entity.Pedido;
@@ -116,4 +117,19 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     ORDER BY mes ASC
 """, nativeQuery = true)
     List<ReceitaAnualPorMesDTO> buscarReceitaAnual(@Param("empresaId") Integer empresaId);
+
+    @Query(value = """
+        SELECT 
+            1 AS id,
+            CAST(COALESCE(SUM(CASE WHEN MONTH(p.prazo) BETWEEN 1 AND 3 THEN pp.qtd_produto ELSE 0 END), 0) AS DECIMAL(12,2)) AS trimestre1,
+            CAST(COALESCE(SUM(CASE WHEN MONTH(p.prazo) BETWEEN 4 AND 6 THEN pp.qtd_produto ELSE 0 END), 0) AS DECIMAL(12,2)) AS trimestre2,
+            CAST(COALESCE(SUM(CASE WHEN MONTH(p.prazo) BETWEEN 7 AND 9 THEN pp.qtd_produto ELSE 0 END), 0) AS DECIMAL(12,2)) AS trimestre3,
+            CAST(COALESCE(SUM(CASE WHEN MONTH(p.prazo) BETWEEN 10 AND 12 THEN pp.qtd_produto ELSE 0 END), 0) AS DECIMAL(12,2)) AS trimestre4
+        FROM pedido p
+        INNER JOIN produtos_pedido pp ON p.id = pp.pedido_id
+        WHERE p.fk_empresa = :empresaId 
+          AND p.status = 'shipped'
+          AND YEAR(p.prazo) = YEAR(CURDATE())
+    """, nativeQuery = true)
+    ProdutosVendidosTrimestreDTO buscarQuantidadeDeProdutosVendidosPorTrimestreNesteAno(@Param("empresaId") Integer empresaId);
 }

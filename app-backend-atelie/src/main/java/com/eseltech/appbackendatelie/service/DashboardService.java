@@ -22,27 +22,27 @@ public class DashboardService {
 
     public DashboardResponseDTO montarDashboard(Integer empresaId) {
 
-        // 1. Materiais
+        // 1. Materiais (Apenas os KPIs de alertas)
         MaterialKpiDTO materialMais = materialRepository.buscarMaterialMaisUtilizado(empresaId);
         MaterialKpiDTO materialMenos = materialRepository.buscarMaterialMenosUtilizado(empresaId);
-        List<MaterialEstoqueDTO> materiaisMargem = materialRepository.buscarMateriaisMenorMargem(empresaId);
 
         // 2. Produtos
         ProdutoKpiDTO produtoMais = produtoRepository.buscarProdutoMaisEncomendado(empresaId);
         ProdutoKpiDTO produtoMenos = produtoRepository.buscarProdutoMenosEncomendado(empresaId);
         List<ProdutoLucroDTO> produtosLucro = produtoRepository.buscarProdutosMaiorLucro(empresaId);
 
-        // 3. Pedidos (Crescimento)
+        // 3. Pedidos e Gráfico Trimestral
+        ProdutosVendidosTrimestreDTO produtosPorTrimestre = pedidoRepository.buscarQuantidadeDeProdutosVendidosPorTrimestreNesteAno(empresaId);
         List<ProdutoCrescimentoDTO> maiorCrescimento = pedidoRepository.buscarMaiorCrescimento(empresaId);
         List<ProdutoCrescimentoDTO> menorCrescimento = pedidoRepository.buscarMenorCrescimento(empresaId);
 
-
+        // Retorna o DTO Pai com a nova estrutura montada
         return new DashboardResponseDTO(
                 materialMais,
                 materialMenos,
                 produtoMais,
                 produtoMenos,
-                materiaisMargem,
+                produtosPorTrimestre,
                 produtosLucro,
                 maiorCrescimento,
                 menorCrescimento

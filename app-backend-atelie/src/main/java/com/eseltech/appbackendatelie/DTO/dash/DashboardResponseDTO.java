@@ -8,8 +8,8 @@ public record DashboardResponseDTO(
         MaterialKpiDTO kpiMaterialMenosUtilizado,
         ProdutoKpiDTO kpiProdutoMaisEncomendado,
         ProdutoKpiDTO kpiProdutoMenosEncomendado,
+        ProdutosVendidosTrimestreDTO produtosVendidosTrimestre,
 
-        List<MaterialEstoqueDTO> graficoMateriaisMargem,
         List<ProdutoLucroDTO> graficoProdutosLucro,
         List<ProdutoCrescimentoDTO> graficoMaiorCrescimento,
         List<ProdutoCrescimentoDTO> graficoMenorCrescimento
