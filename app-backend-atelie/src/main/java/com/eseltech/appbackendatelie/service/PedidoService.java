@@ -29,6 +29,9 @@ public class PedidoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
+    @Autowired
+    private MaterialService materialService;
+
     public List<Pedido> findAll() {
         List<Pedido> lista = pedidoRepository.findAll();
 
@@ -65,6 +68,8 @@ public class PedidoService {
         if (dto.listaProdutos() != null && !dto.listaProdutos().isEmpty()) {
             processarProdutos(dto, pedido);
         }
+
+
 
         return pedidoRepository.save(pedido);
     }

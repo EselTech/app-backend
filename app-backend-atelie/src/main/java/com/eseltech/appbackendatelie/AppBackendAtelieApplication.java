@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Classe principal da aplicação Spring Boot.
@@ -26,6 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                 description = "API REST para gerenciamento de impostos e integração com o Banco Central do Brasil"
         )
 )
+@EnableScheduling
 public class AppBackendAtelieApplication {
 
     /**
