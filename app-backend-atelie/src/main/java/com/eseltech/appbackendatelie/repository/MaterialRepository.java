@@ -66,7 +66,7 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
               AND ped.prazo < DATE_FORMAT(CURDATE(), '%Y-%m-01') + INTERVAL 1 MONTH
             GROUP BY m.id, m.nome, m.metragem 
         ) AS temp
-        WHERE temp.rn = 1
+        WHERE temp.rn <= 5
     """, nativeQuery = true)
     List<UsoMaterialCategoriaDTO> buscarMaterialMaisUsadoPorCategoria(@Param("empresaId") Integer empresaId);
 }
