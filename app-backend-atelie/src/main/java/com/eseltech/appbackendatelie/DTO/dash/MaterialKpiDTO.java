@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 // Para KPIs de Material
 public record MaterialKpiDTO(
-        Long id,
+        Integer id,
         String nome,
         String descricao,
         BigDecimal qtd_estoque,

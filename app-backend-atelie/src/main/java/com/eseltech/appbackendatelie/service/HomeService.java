@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class HomeService {
@@ -47,23 +47,30 @@ public class HomeService {
                     .orElse(new PedidoPorStatusDTO(status, 0L));
         }).collect(Collectors.toList());
 
-        // 3. Gráfico: Produtos Mais Vendidos no Mês (pegar a quantidade) e Materiais Mais Usados no Mês
+        // 3. Gráfico: Produtos Mais Vendidos no Mês
         List<ProdutoMaisVendidoMesDTO> produtosMaisVendidos = produtoRepository.buscarProdutosMaisVendidosNoMes(empresaId);
 
+        // 4. Gráfico: Materiais Mais Usados no Mês (TOP 5 por categoria)
         List<UsoMaterialCategoriaDTO> resultadosMateriais = materialRepository.buscarMaterialMaisUsadoPorCategoria(empresaId);
         List<Categoria> categoriasEsperadas = List.of(Categoria.CENTIMETRO, Categoria.MILILITRO, Categoria.INTEIRO, Categoria.GRAMA);
 
-        List<UsoMaterialCategoriaDTO> materiaisPorCategoria = IntStream.range(0, categoriasEsperadas.size()).mapToObj(index -> {
-            Categoria cat = categoriasEsperadas.get(index);
-            Long id = (long) (index + 1);
+        List<UsoMaterialCategoriaDTO> materiaisPorCategoria = new ArrayList<>();
+        int fakeIdParaSemConsumo = 9999; // ID seguro para não dar conflito no front-end caso mapeiem key
 
-            return resultadosMateriais.stream()
+        for (Categoria cat : categoriasEsperadas) {
+            // Pega todos os materiais (até 5) que a query já filtrou para esta categoria
+            List<UsoMaterialCategoriaDTO> materiaisDestaCategoria = resultadosMateriais.stream()
                     .filter(r -> r.categoria().equalsIgnoreCase(cat.name()))
-                    .findFirst()
-                    .map(r -> new UsoMaterialCategoriaDTO(id, r.valorTotal(), cat.name(), r.nome()))
-                    .orElse(new UsoMaterialCategoriaDTO(id, BigDecimal.ZERO, cat.name(), "Sem consumo"));
-        }).collect(Collectors.toList());
+                    .collect(Collectors.toList());
 
+            if (materiaisDestaCategoria.isEmpty()) {
+                // Se não tem material usado, cria o placeholder genérico
+                materiaisPorCategoria.add(new UsoMaterialCategoriaDTO(fakeIdParaSemConsumo++, BigDecimal.ZERO, cat.name(), "Sem consumo"));
+            } else {
+                // Se tem, joga a lista toda (os DTOs puros que vieram do banco com seus IDs reais)
+                materiaisPorCategoria.addAll(materiaisDestaCategoria);
+            }
+        }
 
         // 5. Retorno consolidado
         return new HomeResponseDTO(

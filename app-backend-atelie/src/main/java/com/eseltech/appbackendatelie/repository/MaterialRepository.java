@@ -43,8 +43,8 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
     @Query(value = """
         SELECT 
             temp.id, 
+            temp.valorTotal,
             temp.categoria, 
-            temp.valorTotal, 
             temp.nome
         FROM (
             SELECT 
