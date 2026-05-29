@@ -1,4 +1,4 @@
-package com.eseltech.appbackendatelie.DTO.home;
+package com.eseltech.appbackendatelie.DTO.dash;
 
 import java.math.BigDecimal;
 

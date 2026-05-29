@@ -12,5 +12,5 @@ public record DashboardResponseDTO(
 
         List<ProdutoLucroDTO> graficoProdutosLucro,
         List<ProdutoCrescimentoDTO> graficoMaiorCrescimento,
-        List<ProdutoCrescimentoDTO> graficoMenorCrescimento
+        List<ReceitaAnualPorMesDTO> receitaAnual
 ) {}

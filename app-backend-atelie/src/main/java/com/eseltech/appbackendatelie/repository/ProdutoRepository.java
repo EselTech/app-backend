@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.repository;
 
+import com.eseltech.appbackendatelie.DTO.home.ProdutoMaisVendidoMesDTO;
 import com.eseltech.appbackendatelie.entity.Produto;
 import com.eseltech.appbackendatelie.DTO.dash.*;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -59,4 +60,22 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
         ORDER BY total_unidades_vendidas ASC LIMIT 1
     """, nativeQuery = true)
     ProdutoKpiDTO buscarProdutoMenosEncomendado(@Param("empresaId") Integer empresaId);
+
+    @Query(value = """
+        SELECT 
+            p.id AS id,
+            COALESCE(SUM(pp.qtd_produto), 0) AS quantidade,
+            p.nome AS nome
+        FROM produtos_pedido pp
+        INNER JOIN pedido ped ON pp.pedido_id = ped.id
+        INNER JOIN produto p ON pp.produto_id = p.id
+        WHERE ped.empresa_id = :empresaId
+          AND ped.status = 'shipped'
+          AND ped.prazo >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+          AND ped.prazo < DATE_FORMAT(CURDATE(), '%Y-%m-01') + INTERVAL 1 MONTH
+        GROUP BY p.id, p.nome
+        ORDER BY quantidade DESC
+        LIMIT 5
+    """, nativeQuery = true)
+    List<ProdutoMaisVendidoMesDTO> buscarProdutosMaisVendidosNoMes(@Param("empresaId") Integer empresaId);
 }

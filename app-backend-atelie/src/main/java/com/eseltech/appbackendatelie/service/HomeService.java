@@ -1,7 +1,9 @@
 package com.eseltech.appbackendatelie.service;
 
+import com.eseltech.appbackendatelie.DTO.dash.ReceitaAnualPorMesDTO;
 import com.eseltech.appbackendatelie.DTO.home.*;
 import com.eseltech.appbackendatelie.repository.PedidoRepository;
+import com.eseltech.appbackendatelie.repository.ProdutoRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +19,16 @@ public class HomeService {
     @Autowired
     private PedidoRepository repository;
 
+    @Autowired
+    private ProdutoRepository produtoRepository;
+
     @Operation(summary = "Obter dados consolidados da Home", description = "Busca as métricas financeiras, gráfico de status e receita anual")
     public HomeResponseDTO getHomeData(Integer empresaId) {
 
         // 1. KPIs
         BigDecimal receita = repository.somarReceitaMesAtual(empresaId);
         BigDecimal despesas = repository.somarDespesasMesAtual(empresaId);
-        BigDecimal lucro = receita.subtract(despesas);
+        BigDecimal lucro = repository.somarLucroMesAtual(empresaId);
         BigDecimal aReceber = repository.somarValorAReceberMesAtual(empresaId);
 
         // 2. Gráfico: Pedidos por Status
@@ -37,16 +42,9 @@ public class HomeService {
                     .orElse(new PedidoPorStatusDTO(status, 0L));
         }).collect(Collectors.toList());
 
-        // 3. Gráfico: Receita Anual (12 meses com zeros preenchidos)
-        List<ReceitaAnualPorMesDTO> resultadosReceitaAnual = repository.buscarReceitaAnual(empresaId);
+        // 3. Gráfico: Produtos Mais Vendidos no Mês (pegar a quantidade) e Materiais Mais Usados no Mês
+        List<ProdutoMaisVendidoMesDTO> produtosMaisVendidos = produtoRepository.buscarProdutosMaisVendidosNoMes(empresaId);
 
-        List<ReceitaAnualPorMesDTO> receitaAnual = IntStream.rangeClosed(1, 12).mapToObj(mes -> {
-                    return resultadosReceitaAnual.stream()
-                            .filter(r -> r.mes().equals(mes))
-                            .findFirst()
-                            .orElse(new ReceitaAnualPorMesDTO(mes, BigDecimal.ZERO));
-                })
-                .collect(Collectors.toList());
 
         // 4. Retorno consolidado
         return new HomeResponseDTO(
@@ -55,7 +53,7 @@ public class HomeService {
                 new ReceberKPIDTO(aReceber),
                 new ReceitaKPIDTO(receita),
                 pedidosPorStatus,
-                receitaAnual
+                produtosMaisVendidos
         );
     }
 }
