@@ -48,7 +48,7 @@ class SimulacaoServiceTest {
 
         // Material 1: Papel - 50 reais para 100 cm
         material1 = new Material();
-        material1.setId(1L);
+        material1.setId(1);
         material1.setNome("Papel Cartão");
         material1.setCategoria(Categoria.CENTIMETRO);
         material1.setQtdEstoque(new BigDecimal("100.00"));
@@ -57,7 +57,7 @@ class SimulacaoServiceTest {
 
         // Material 2: Cola - 20 reais para 500 ml
         material2 = new Material();
-        material2.setId(2L);
+        material2.setId(2);
         material2.setNome("Cola Branca");
         material2.setCategoria(Categoria.MILILITRO);
         material2.setQtdEstoque(new BigDecimal("500.00"));
@@ -68,7 +68,7 @@ class SimulacaoServiceTest {
     @Test
     void simularPreco_DeveCalcularCorretamenteComUmMaterial() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("10.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("10.00"));
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO),
                 new BigDecimal("5.00"),  // Mão de obra
@@ -81,7 +81,7 @@ class SimulacaoServiceTest {
                 LocalDate.of(2026, 5, 1)
         );
 
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material1));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material1));
         when(impostoService.buscarTodos()).thenReturn(List.of(impostoDTO));
 
         // Act
@@ -112,8 +112,8 @@ class SimulacaoServiceTest {
     @Test
     void simularPreco_DeveCalcularComMultiplosMateriais() {
         // Arrange
-        MaterialProdutoDTO materialDTO1 = new MaterialProdutoDTO(1L, new BigDecimal("20.00"));
-        MaterialProdutoDTO materialDTO2 = new MaterialProdutoDTO(2L, new BigDecimal("100.00"));
+        MaterialProdutoDTO materialDTO1 = new MaterialProdutoDTO(1, new BigDecimal("20.00"));
+        MaterialProdutoDTO materialDTO2 = new MaterialProdutoDTO(2, new BigDecimal("100.00"));
 
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO1, materialDTO2),
@@ -121,8 +121,8 @@ class SimulacaoServiceTest {
                 new BigDecimal("40.00")
         );
 
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material1));
-        when(materialRepository.findById(2L)).thenReturn(Optional.of(material2));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material1));
+        when(materialRepository.findById(2)).thenReturn(Optional.of(material2));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
 
         // Act
@@ -150,7 +150,7 @@ class SimulacaoServiceTest {
     @Test
     void simularPreco_DeveTratarIPCAZero() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("10.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("10.00"));
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO),
                 new BigDecimal("5.00"),
@@ -163,7 +163,7 @@ class SimulacaoServiceTest {
                 LocalDate.of(2026, 5, 1)
         );
 
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material1));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material1));
         when(impostoService.buscarTodos()).thenReturn(List.of(impostoDTO));
 
         // Act
@@ -177,14 +177,14 @@ class SimulacaoServiceTest {
     @Test
     void simularPreco_DeveTratarListaDeImpostosVazia() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("5.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("5.00"));
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO),
                 new BigDecimal("3.00"),
                 new BigDecimal("25.00")
         );
 
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material1));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material1));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
 
         // Act
@@ -205,7 +205,7 @@ class SimulacaoServiceTest {
     @Test
     void simularPreco_DeveTratarIPCANaoEncontrado() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("10.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("10.00"));
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO),
                 new BigDecimal("5.00"),
@@ -219,7 +219,7 @@ class SimulacaoServiceTest {
                 LocalDate.of(2026, 5, 1)
         );
 
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material1));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material1));
         when(impostoService.buscarTodos()).thenReturn(List.of(impostoDTO));
 
         // Act
@@ -233,7 +233,7 @@ class SimulacaoServiceTest {
     @Test
     void simularPreco_DeveArredondarCorretamente() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("7.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("7.00"));
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO),
                 new BigDecimal("3.33"),
@@ -246,7 +246,7 @@ class SimulacaoServiceTest {
                 LocalDate.of(2026, 5, 1)
         );
 
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material1));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material1));
         when(impostoService.buscarTodos()).thenReturn(List.of(impostoDTO));
 
         // Act
@@ -268,18 +268,18 @@ class SimulacaoServiceTest {
     void simularPreco_DeveTratarValoresPequenos() {
         // Arrange
         Material materialPequeno = new Material();
-        materialPequeno.setId(3L);
+        materialPequeno.setId(3);
         materialPequeno.setQtdEstoque(new BigDecimal("1000.00"));
         materialPequeno.setPreco(new BigDecimal("1.00"));
 
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(3L, new BigDecimal("0.01"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(3, new BigDecimal("0.01"));
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO),
                 new BigDecimal("0.01"),
                 new BigDecimal("10.00")
         );
 
-        when(materialRepository.findById(3L)).thenReturn(Optional.of(materialPequeno));
+        when(materialRepository.findById(3)).thenReturn(Optional.of(materialPequeno));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
 
         // Act
@@ -296,18 +296,18 @@ class SimulacaoServiceTest {
     void simularPreco_DeveTratarValoresGrandes() {
         // Arrange
         Material materialGrande = new Material();
-        materialGrande.setId(4L);
+        materialGrande.setId(4);
         materialGrande.setQtdEstoque(new BigDecimal("10000.00"));
         materialGrande.setPreco(new BigDecimal("50000.00"));
 
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(4L, new BigDecimal("5000.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(4, new BigDecimal("5000.00"));
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO),
                 new BigDecimal("10000.00"),
                 new BigDecimal("100.00")
         );
 
-        when(materialRepository.findById(4L)).thenReturn(Optional.of(materialGrande));
+        when(materialRepository.findById(4)).thenReturn(Optional.of(materialGrande));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
 
         // Act
@@ -328,11 +328,11 @@ class SimulacaoServiceTest {
     void simularPreco_DeveCalcularComDivisaoComplexa() {
         // Arrange
         Material materialComplexo = new Material();
-        materialComplexo.setId(5L);
+        materialComplexo.setId(5);
         materialComplexo.setQtdEstoque(new BigDecimal("3.00"));
         materialComplexo.setPreco(new BigDecimal("10.00"));
 
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(5L, new BigDecimal("1.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(5, new BigDecimal("1.00"));
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO),
                 new BigDecimal("5.00"),
@@ -345,7 +345,7 @@ class SimulacaoServiceTest {
                 LocalDate.of(2026, 5, 1)
         );
 
-        when(materialRepository.findById(5L)).thenReturn(Optional.of(materialComplexo));
+        when(materialRepository.findById(5)).thenReturn(Optional.of(materialComplexo));
         when(impostoService.buscarTodos()).thenReturn(List.of(impostoDTO));
 
         // Act
@@ -370,7 +370,7 @@ class SimulacaoServiceTest {
     @Test
     void simularPreco_DeveAplicarMargemLucroCorretamente() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("10.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("10.00"));
 
         // Teste com margem de 0%
         SimularPrecoRequestDTO requestSemMargem = new SimularPrecoRequestDTO(
@@ -379,7 +379,7 @@ class SimulacaoServiceTest {
                 BigDecimal.ZERO
         );
 
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material1));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material1));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
 
         // Act
@@ -394,18 +394,18 @@ class SimulacaoServiceTest {
     void simularPreco_DeveUsarRoundingModeHalfUp() {
         // Arrange
         Material materialArredondamento = new Material();
-        materialArredondamento.setId(6L);
+        materialArredondamento.setId(6);
         materialArredondamento.setQtdEstoque(new BigDecimal("3.00"));
         materialArredondamento.setPreco(new BigDecimal("1.00"));
 
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(6L, new BigDecimal("1.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(6, new BigDecimal("1.00"));
         SimularPrecoRequestDTO request = new SimularPrecoRequestDTO(
                 List.of(materialDTO),
                 BigDecimal.ZERO,
                 BigDecimal.ZERO
         );
 
-        when(materialRepository.findById(6L)).thenReturn(Optional.of(materialArredondamento));
+        when(materialRepository.findById(6)).thenReturn(Optional.of(materialArredondamento));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
 
         // Act
@@ -416,6 +416,7 @@ class SimulacaoServiceTest {
         assertEquals(new BigDecimal("0.33"), resultado.custoMateriais());
     }
 }
+
 
 
 

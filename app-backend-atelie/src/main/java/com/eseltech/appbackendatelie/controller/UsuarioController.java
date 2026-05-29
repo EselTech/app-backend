@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.controller;
 
+import com.eseltech.appbackendatelie.DTO.request.AtualizarSenhaRequest;
 import com.eseltech.appbackendatelie.entity.Usuario;
 import com.eseltech.appbackendatelie.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -111,5 +113,29 @@ public class UsuarioController {
             @PathVariable Long id) {
         usuarioService.removerUsuario(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Atualizar senha do usuário",
+            description = "Permite que um usuário atualize sua senha fornecendo a senha antiga e a nova senha"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Senha atualizada com sucesso",
+                    content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "Senha atualizada com sucesso!"))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos fornecidos ou senha antiga incorreta",
+                    content = @Content
+            )
+    })
+    @PutMapping("/atualizar-senha")
+    public ResponseEntity<String> atualizarSenha(
+            @Parameter(description = "Informações necessárias para atualizar a senha do usuário", required = true)
+            @RequestBody @Valid AtualizarSenhaRequest request) {
+        usuarioService.atualizarSenha(request);
+        return ResponseEntity.ok().body("Senha atualizada com sucesso!");
     }
 }

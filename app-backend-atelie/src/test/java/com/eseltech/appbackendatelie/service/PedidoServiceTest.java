@@ -130,8 +130,8 @@ class PedidoServiceTest {
         );
 
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        when(produtoRepository.findById(1L)).thenReturn(Optional.of(produto1));
-        when(produtoRepository.findById(2L)).thenReturn(Optional.of(produto2));
+        when(produtoRepository.findById(1)).thenReturn(Optional.of(produto1));
+        when(produtoRepository.findById(2)).thenReturn(Optional.of(produto2));
         when(pedidoRepository.save(any(Pedido.class))).thenAnswer(i -> {
             Pedido p = i.getArgument(0);
             p.setId(2);
@@ -147,8 +147,8 @@ class PedidoServiceTest {
         assertEquals(2, resultado.getListaProdutos().size());
         assertEquals(10, resultado.getListaProdutos().get(0).getQtdProduto());
         assertEquals(5, resultado.getListaProdutos().get(1).getQtdProduto());
-        verify(produtoRepository, times(1)).findById(1L);
-        verify(produtoRepository, times(1)).findById(2L);
+        verify(produtoRepository, times(1)).findById(1);
+        verify(produtoRepository, times(1)).findById(2);
         verify(pedidoRepository, times(1)).save(any(Pedido.class));
     }
 
@@ -179,7 +179,7 @@ class PedidoServiceTest {
         );
 
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        when(produtoRepository.findById(999L)).thenReturn(Optional.empty());
+        when(produtoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> pedidoService.salvarPedido(dto));
@@ -278,7 +278,7 @@ class PedidoServiceTest {
 
         when(pedidoRepository.findById(1)).thenReturn(Optional.of(pedido));
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        when(produtoRepository.findById(1L)).thenReturn(Optional.of(produto1));
+        when(produtoRepository.findById(1)).thenReturn(Optional.of(produto1));
         when(pedidoRepository.save(any(Pedido.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
@@ -310,7 +310,7 @@ class PedidoServiceTest {
 
         when(pedidoRepository.findById(1)).thenReturn(Optional.of(pedido));
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        when(produtoRepository.findById(2L)).thenReturn(Optional.of(produto2));
+        when(produtoRepository.findById(2)).thenReturn(Optional.of(produto2));
         when(pedidoRepository.save(any(Pedido.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
@@ -355,6 +355,8 @@ class PedidoServiceTest {
         verify(pedidoRepository, never()).save(any(Pedido.class));
     }
 }
+
+
 
 
 
