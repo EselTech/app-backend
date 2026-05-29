@@ -14,7 +14,7 @@ public class Empresa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     @Schema(description = "Identificador único da empresa", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
-    private Long id;
+    private Integer id;
 
     @Size(max = 200)
     @NotNull
@@ -36,11 +36,11 @@ public class Empresa {
         this.cnpj = cnpj;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

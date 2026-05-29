@@ -38,7 +38,7 @@ public class ShopeeApiService {
         this.produtoService = produtoService;
     }
 
-    public Map<String, Object> buscarListaProdutos(Long shopId, Integer offset, Integer pageSize) {
+    public Map<String, Object> buscarListaProdutos(Integer shopId, Integer offset, Integer pageSize) {
         logger.info("Buscando lista de produtos para shopId: {} (offset: {}, pageSize: {})", shopId, offset, pageSize);
 
         int offsetValue = (offset != null && offset >= 0) ? offset : 0;
@@ -93,7 +93,7 @@ public class ShopeeApiService {
         }
     }
 
-    public Map<String, Object> obterDetalhesProduto(Long shopId, Long itemId) {
+    public Map<String, Object> obterDetalhesProduto(Integer shopId, Integer itemId) {
         logger.info("Buscando detalhes do produto {} para shopId: {}", itemId, shopId);
 
         try {
@@ -140,7 +140,7 @@ public class ShopeeApiService {
         }
     }
 
-    public Map<String, Object> atualizarEstoque(Long shopId, Long itemId, Integer stock) {
+    public Map<String, Object> atualizarEstoque(Integer shopId, Long itemId, Integer stock) {
         logger.info("Atualizando estoque do produto {} para {} unidades", itemId, stock);
 
         try {
@@ -193,7 +193,7 @@ public class ShopeeApiService {
         }
     }
 
-    public Map<String, Object> fazerRequisicaoGet(Long shopId, String path, Map<String, String> additionalParams) {
+    public Map<String, Object> fazerRequisicaoGet(Integer shopId, String path, Map<String, String> additionalParams) {
         logger.info("Fazendo requisição GET para: {}", path);
 
         try {
@@ -235,7 +235,7 @@ public class ShopeeApiService {
         }
     }
 
-    public Map<String, Object> fazerRequisicaoPost(Long shopId, String path, Map<String, Object> requestBody) {
+    public Map<String, Object> fazerRequisicaoPost(Integer shopId, String path, Map<String, Object> requestBody) {
         logger.info("Fazendo requisição POST para: {}", path);
 
         try {
@@ -274,7 +274,7 @@ public class ShopeeApiService {
         }
     }
 
-    public ImportarProdutosShopeeResponseDTO importarProdutosParaBanco(Long shopId, Long empresaId, Integer pageSize) {
+    public ImportarProdutosShopeeResponseDTO importarProdutosParaBanco(Integer shopId, Integer empresaId, Integer pageSize) {
         logger.info("Iniciando importação de produtos da Shopee para shopId: {} e empresaId: {}", shopId, empresaId);
 
         int pageSizeValue = (pageSize != null && pageSize > 0) ? pageSize : 100;
@@ -309,7 +309,7 @@ public class ShopeeApiService {
                 logger.info("Processando {} produtos (offset: {})", items.size(), offset);
 
                 for (Map<String, Object> item : items) {
-                    Long itemId = null;
+                    Integer itemId = null;
                     String nomeProduto = "Desconhecido";
 
                     try {
@@ -465,20 +465,17 @@ public class ShopeeApiService {
         }
     }
 
-    private Long getLongFromMap(Map<String, Object> map, String key) {
+    private Integer getLongFromMap(Map<String, Object> map, String key) {
         Object value = map.get(key);
         if (value == null) {
             return null;
         }
-        if (value instanceof Long) {
-            return (Long) value;
-        }
         if (value instanceof Integer) {
-            return ((Integer) value).longValue();
+            return (Integer) value;
         }
         if (value instanceof String) {
             try {
-                return Long.parseLong((String) value);
+                return Integer.parseInt((String) value);
             } catch (NumberFormatException e) {
                 return null;
             }

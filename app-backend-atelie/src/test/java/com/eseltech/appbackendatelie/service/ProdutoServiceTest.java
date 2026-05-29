@@ -57,7 +57,7 @@ class ProdutoServiceTest {
     void setUp() {
         // Setup Empresa
         empresa = new Empresa();
-        empresa.setId(1L);
+        empresa.setId(1);
         empresa.setRazaoSocial("Empresa Teste");
         empresa.setCnpj("12345678901234");
 
@@ -73,7 +73,7 @@ class ProdutoServiceTest {
 
         // Setup Produto
         produto = new Produto();
-        produto.setId(1L);
+        produto.setId(1);
         produto.setNome("Sacola Personalizada");
         produto.setDescricao("Sacola com estampa");
         produto.setEmpresa(empresa);
@@ -90,7 +90,7 @@ class ProdutoServiceTest {
 
         ProdutoDTO dto = new ProdutoDTO(
                 null,
-                1L,
+                1,
                 "Sacola Personalizada",
                 "Sacola com estampa",
                 new BigDecimal("15.00"),
@@ -106,12 +106,12 @@ class ProdutoServiceTest {
                 LocalDate.of(2026, 5, 1)
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(impostoService.buscarTodos()).thenReturn(List.of(impostoDTO));
         when(produtoRepository.save(any(Produto.class))).thenAnswer(invocation -> {
             Produto p = invocation.getArgument(0);
-            p.setId(1L);
+            p.setId(1);
             return p;
         });
         doNothing().when(twilioService).sendMessage(anyString());
@@ -143,12 +143,12 @@ class ProdutoServiceTest {
     void salvarProduto_DeveLancarExcecao_QuandoEmpresaNaoExiste() {
         // Arrange
         ProdutoDTO dto = new ProdutoDTO(
-                null, 999L, "Produto", "Descrição",
+                null, 999, "Produto", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN, BigDecimal.ZERO,
                 BigDecimal.ZERO, new ArrayList<>()
         );
 
-        when(empresaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(empresaRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> produtoService.salvarProduto(dto));
@@ -161,12 +161,12 @@ class ProdutoServiceTest {
         // Arrange
         MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(999, new BigDecimal("10.00"));
         ProdutoDTO dto = new ProdutoDTO(
-                null, 1L, "Produto", "Descrição",
+                null, 1, "Produto", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN, BigDecimal.ZERO,
                 BigDecimal.ZERO, List.of(materialDTO)
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -179,14 +179,14 @@ class ProdutoServiceTest {
         // Arrange
         MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("10.00"));
         ProdutoDTO dto = new ProdutoDTO(
-                null, 1L, "Produto", "Descrição",
+                null, 1, "Produto", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN,
                 null, // custoMaoDeObra nulo
                 null, // margemLucroPercentual nulo
                 List.of(materialDTO)
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
         when(produtoRepository.save(any(Produto.class))).thenAnswer(i -> i.getArgument(0));
@@ -210,14 +210,14 @@ class ProdutoServiceTest {
         // Arrange
         MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("0.01"));
         ProdutoDTO dto = new ProdutoDTO(
-                null, 1L, "Produto", "Descrição",
+                null, 1, "Produto", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN,
                 new BigDecimal("0.01"),
                 new BigDecimal("0.01"),
                 List.of(materialDTO)
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
         when(produtoRepository.save(any(Produto.class))).thenAnswer(i -> i.getArgument(0));
@@ -243,7 +243,7 @@ class ProdutoServiceTest {
 
         // Assert
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getId());
+        assertEquals(1, resultado.getId());
         assertEquals("Sacola Personalizada", resultado.getNome());
         verify(produtoRepository, times(1)).findById(1);
     }
@@ -313,7 +313,7 @@ class ProdutoServiceTest {
         // Arrange
         MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("15.00"));
         ProdutoDTO dto = new ProdutoDTO(
-                1L, 1L, "Produto Atualizado", "Nova descrição",
+                1, 1, "Produto Atualizado", "Nova descrição",
                 BigDecimal.TEN, BigDecimal.TEN,
                 new BigDecimal("10.00"),
                 new BigDecimal("30.00"),
@@ -321,7 +321,7 @@ class ProdutoServiceTest {
         );
 
         when(produtoRepository.findById(1)).thenReturn(Optional.of(produto));
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
         when(produtoRepository.save(any(Produto.class))).thenAnswer(i -> i.getArgument(0));
@@ -341,7 +341,7 @@ class ProdutoServiceTest {
     void atualizarProduto_DeveLancarExcecao_QuandoProdutoNaoExiste() {
         // Arrange
         ProdutoDTO dto = new ProdutoDTO(
-                999L, 1L, "Produto", "Descrição",
+                999, 1, "Produto", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN, BigDecimal.ZERO,
                 BigDecimal.ZERO, new ArrayList<>()
         );
@@ -356,16 +356,16 @@ class ProdutoServiceTest {
     @Test
     void salvarProdutoSimplificado_DeveSalvarComSucesso() {
         // Arrange
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(produtoRepository.save(any(Produto.class))).thenAnswer(i -> {
             Produto p = i.getArgument(0);
-            p.setId(2L);
+            p.setId(2);
             return p;
         });
 
         // Act
         Produto resultado = produtoService.salvarProdutoSimplificado(
-                1L, "Produto Simples", "Descrição simples",
+                1, "Produto Simples", "Descrição simples",
                 new BigDecimal("10.00"), new BigDecimal("20.00")
         );
 
@@ -380,16 +380,16 @@ class ProdutoServiceTest {
     @Test
     void salvarProdutoShopee_DeveSalvarComCustoEstimado() {
         // Arrange
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(produtoRepository.save(any(Produto.class))).thenAnswer(i -> {
             Produto p = i.getArgument(0);
-            p.setId(3L);
+            p.setId(3);
             return p;
         });
 
         // Act
         Produto resultado = produtoService.salvarProdutoShopee(
-                1L, "Produto Shopee", "Da Shopee",
+                1, "Produto Shopee", "Da Shopee",
                 new BigDecimal("100.00")
         );
 

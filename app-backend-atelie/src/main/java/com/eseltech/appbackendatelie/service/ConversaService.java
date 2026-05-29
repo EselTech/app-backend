@@ -24,7 +24,7 @@ public class ConversaService {
     @Operation(summary = "Salvar nova mensagem", description = "Persiste a mensagem enviada pelo usuário ou sistema no banco de dados vinculado à empresa")
     public ConversaDTO salvarMensagem(ConversaDTO dto) {
 
-        Empresa empresa = empresaRepository.findById(dto.empresaId().longValue())
+        Empresa empresa = empresaRepository.findById(dto.empresaId())
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada"));
 
         Conversa conversa = new Conversa(

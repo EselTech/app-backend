@@ -50,18 +50,18 @@ class PedidoServiceTest {
     void setUp() {
         // Setup Empresa
         empresa = new Empresa();
-        empresa.setId(1L);
+        empresa.setId(1);
         empresa.setRazaoSocial("Empresa Teste");
         empresa.setCnpj("12345678901234");
 
         // Setup Produtos
         produto1 = new Produto();
-        produto1.setId(1L);
+        produto1.setId(1);
         produto1.setNome("Produto 1");
         produto1.setEmpresa(empresa);
 
         produto2 = new Produto();
-        produto2.setId(2L);
+        produto2.setId(2);
         produto2.setNome("Produto 2");
         produto2.setEmpresa(empresa);
 
@@ -91,7 +91,7 @@ class PedidoServiceTest {
                 null // Sem produtos
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(pedidoRepository.save(any(Pedido.class))).thenAnswer(i -> {
             Pedido p = i.getArgument(0);
             p.setId(1);
@@ -129,7 +129,7 @@ class PedidoServiceTest {
                 List.of(produtoDTO1, produtoDTO2)
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(produtoRepository.findById(1)).thenReturn(Optional.of(produto1));
         when(produtoRepository.findById(2)).thenReturn(Optional.of(produto2));
         when(pedidoRepository.save(any(Pedido.class))).thenAnswer(i -> {
@@ -161,7 +161,7 @@ class PedidoServiceTest {
                 null
         );
 
-        when(empresaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(empresaRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> pedidoService.salvarPedido(dto));
@@ -178,7 +178,7 @@ class PedidoServiceTest {
                 List.of(produtoDTO)
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(produtoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -277,7 +277,7 @@ class PedidoServiceTest {
         );
 
         when(pedidoRepository.findById(1)).thenReturn(Optional.of(pedido));
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(produtoRepository.findById(1)).thenReturn(Optional.of(produto1));
         when(pedidoRepository.save(any(Pedido.class))).thenAnswer(i -> i.getArgument(0));
 
@@ -309,7 +309,7 @@ class PedidoServiceTest {
         );
 
         when(pedidoRepository.findById(1)).thenReturn(Optional.of(pedido));
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(produtoRepository.findById(2)).thenReturn(Optional.of(produto2));
         when(pedidoRepository.save(any(Pedido.class))).thenAnswer(i -> i.getArgument(0));
 
@@ -348,7 +348,7 @@ class PedidoServiceTest {
         );
 
         when(pedidoRepository.findById(1)).thenReturn(Optional.of(pedido));
-        when(empresaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(empresaRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> pedidoService.atualizarPedido(1, dto));

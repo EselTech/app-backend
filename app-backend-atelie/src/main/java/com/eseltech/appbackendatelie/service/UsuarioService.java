@@ -47,11 +47,11 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Usuario buscarUsuarioPorId(Long id) {
+    public Usuario buscarUsuarioPorId(Integer id) {
         return usuarioRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }
 
-    public void atualizarUsuario(Usuario usuario, Long id) {
+    public void atualizarUsuario(Usuario usuario, Integer id) {
         Usuario usuarioExistente = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado com id: " + id));
         usuarioExistente.setNome(usuario.getNome());
         usuarioExistente.setEmail(usuario.getEmail());
@@ -73,7 +73,7 @@ public class UsuarioService {
         }
     }
 
-    public void removerUsuario(Long id) {
+    public void removerUsuario(Integer id) {
         usuarioRepository.deleteById(id);
     }
 

@@ -15,5 +15,5 @@ public record AtualizarSenhaRequest(
       String novaSenha,
 
       @NotNull(message = "O ID do usuário é obrigatório")
-      Long userID
+      Integer userID
 ) {}

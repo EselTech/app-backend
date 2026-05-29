@@ -43,7 +43,7 @@ class SimulacaoServiceTest {
     @BeforeEach
     void setUp() {
         empresa = new Empresa();
-        empresa.setId(1L);
+        empresa.setId(1);
         empresa.setRazaoSocial("Empresa Teste");
 
         // Material 1: Papel - 50 reais para 100 cm

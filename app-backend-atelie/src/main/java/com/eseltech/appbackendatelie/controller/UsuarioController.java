@@ -41,7 +41,7 @@ public class UsuarioController {
             )
     })
     @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Long id) {
+    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(usuarioService.buscarUsuarioPorId(id));
     }
 
@@ -81,7 +81,7 @@ public class UsuarioController {
             @Parameter(description = "Dados atualizados do usuário", required = true)
             @RequestBody Usuario usuario,
             @Parameter(description = "ID do usuário a ser atualizado", required = true, example = "1")
-            @PathVariable Long id) {
+            @PathVariable Integer id) {
         usuarioService.atualizarUsuario(usuario, id);
         return ResponseEntity.ok().body("Atualizado com sucesso!");
     }
@@ -110,7 +110,7 @@ public class UsuarioController {
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<String> removerUsuario(
             @Parameter(description = "ID do usuário a ser removido", required = true, example = "1")
-            @PathVariable Long id) {
+            @PathVariable Integer id) {
         usuarioService.removerUsuario(id);
         return ResponseEntity.noContent().build();
     }

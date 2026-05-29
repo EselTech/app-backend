@@ -53,7 +53,7 @@ public class PedidoService {
 
     @Transactional
     public Pedido salvarPedido(PedidoDTO dto) {
-        Empresa empresa = empresaRepository.findById(dto.empresaId().longValue()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
+        Empresa empresa = empresaRepository.findById(dto.empresaId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
 
         Pedido pedido = new Pedido();
         pedido.setEmpresa(empresa);
@@ -91,7 +91,7 @@ public class PedidoService {
     @Transactional
     public Pedido atualizarPedido(Integer id, PedidoDTO dto) {
         Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com id: " + id));
-        Empresa empresa = empresaRepository.findById(dto.empresaId().longValue()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
+        Empresa empresa = empresaRepository.findById(dto.empresaId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
 
         pedido.setEmpresa(empresa);
         pedido.setNome(dto.nome());

@@ -28,17 +28,17 @@ public class OrcamentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Orcamento> getById(@PathVariable Long id) {
+    public ResponseEntity<Orcamento> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Orcamento> updateProduto(@PathVariable Long id, @RequestBody @Valid OrcamentoDTO orcamento) {
+    public ResponseEntity<Orcamento> updateProduto(@PathVariable Integer id, @RequestBody @Valid OrcamentoDTO orcamento) {
         return ResponseEntity.ok(service.atualizarOrcamento(id, orcamento));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         service.removerOrcamento(id);
         return ResponseEntity.noContent().build();
     }

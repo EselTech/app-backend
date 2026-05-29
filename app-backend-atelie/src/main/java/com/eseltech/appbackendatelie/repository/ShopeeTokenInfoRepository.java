@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ShopeeTokenInfoRepository extends JpaRepository<ShopeeTokenInfo, Long> {
+public interface ShopeeTokenInfoRepository extends JpaRepository<ShopeeTokenInfo, Integer> {
 
-    Optional<ShopeeTokenInfo> findByShopId(Long shopId);
+    Optional<ShopeeTokenInfo> findByShopId(Integer shopId);
 
-    boolean existsByShopId(Long shopId);
+    boolean existsByShopId(Integer shopId);
 }
 

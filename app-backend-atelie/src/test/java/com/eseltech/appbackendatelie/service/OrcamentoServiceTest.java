@@ -41,7 +41,7 @@ class OrcamentoServiceTest {
     void setUp() {
         // Setup Empresa
         empresa = new Empresa();
-        empresa.setId(1L);
+        empresa.setId(1);
         empresa.setRazaoSocial("Empresa Teste");
         empresa.setCnpj("12345678901234");
 
@@ -59,13 +59,13 @@ class OrcamentoServiceTest {
         // Arrange
         OrcamentoDTO dto = new OrcamentoDTO(
                 null,
-                1L,
+                1,
                 "Orçamento Novo",
                 "Cliente ABC",
                 new BigDecimal("750.00")
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(orcamentoRepository.save(any(Orcamento.class))).thenAnswer(i -> {
             Orcamento o = i.getArgument(0);
             o.setId(2);
@@ -88,11 +88,11 @@ class OrcamentoServiceTest {
     void salvaOrcamento_DeveLancarExcecao_QuandoEmpresaNaoExiste() {
         // Arrange
         OrcamentoDTO dto = new OrcamentoDTO(
-                null, 999L, "Orçamento", "Cliente",
+                null, 999, "Orçamento", "Cliente",
                 BigDecimal.TEN
         );
 
-        when(empresaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(empresaRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> orcamentoService.salvaOrcamento(dto));
@@ -102,26 +102,26 @@ class OrcamentoServiceTest {
     @Test
     void findById_DeveRetornarOrcamento_QuandoExiste() {
         // Arrange
-        when(orcamentoRepository.findById(1L)).thenReturn(Optional.of(orcamento));
+        when(orcamentoRepository.findById(1)).thenReturn(Optional.of(orcamento));
 
         // Act
-        Orcamento resultado = orcamentoService.findById(1L);
+        Orcamento resultado = orcamentoService.findById(1);
 
         // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.getId());
         assertEquals("Orçamento Teste", resultado.getTitulo());
-        verify(orcamentoRepository, times(1)).findById(1L);
+        verify(orcamentoRepository, times(1)).findById(1);
     }
 
     @Test
     void findById_DeveLancarExcecao_QuandoNaoExiste() {
         // Arrange
-        when(orcamentoRepository.findById(999L)).thenReturn(Optional.empty());
+        when(orcamentoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> orcamentoService.findById(999L));
-        verify(orcamentoRepository, times(1)).findById(999L);
+        assertThrows(ResourceNotFoundException.class, () -> orcamentoService.findById(999));
+        verify(orcamentoRepository, times(1)).findById(999);
     }
 
     @Test
@@ -153,26 +153,26 @@ class OrcamentoServiceTest {
     void atualizarOrcamento_DeveAtualizarComSucesso() {
         // Arrange
         OrcamentoDTO dto = new OrcamentoDTO(
-                1L,
-                1L,
+                1,
+                1,
                 "Orçamento Atualizado",
                 "Cliente Atualizado",
                 new BigDecimal("1000.00")
         );
 
-        when(orcamentoRepository.findById(1L)).thenReturn(Optional.of(orcamento));
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(orcamentoRepository.findById(1)).thenReturn(Optional.of(orcamento));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(orcamentoRepository.save(any(Orcamento.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
-        Orcamento resultado = orcamentoService.atualizarOrcamento(1L, dto);
+        Orcamento resultado = orcamentoService.atualizarOrcamento(1, dto);
 
         // Assert
         assertNotNull(resultado);
         assertEquals("Orçamento Atualizado", resultado.getTitulo());
         assertEquals("Cliente Atualizado", resultado.getCliente());
         assertEquals(new BigDecimal("1000.00"), resultado.getValor());
-        verify(orcamentoRepository, times(1)).findById(1L);
+        verify(orcamentoRepository, times(1)).findById(1);
         verify(orcamentoRepository, times(1)).save(any(Orcamento.class));
     }
 
@@ -180,14 +180,14 @@ class OrcamentoServiceTest {
     void atualizarOrcamento_DeveLancarExcecao_QuandoOrcamentoNaoExiste() {
         // Arrange
         OrcamentoDTO dto = new OrcamentoDTO(
-                999L, 1L, "Orçamento", "Cliente",
+                999, 1, "Orçamento", "Cliente",
                 BigDecimal.TEN
         );
 
-        when(orcamentoRepository.findById(999L)).thenReturn(Optional.empty());
+        when(orcamentoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> orcamentoService.atualizarOrcamento(999L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> orcamentoService.atualizarOrcamento(999, dto));
         verify(orcamentoRepository, never()).save(any(Orcamento.class));
     }
 
@@ -195,52 +195,52 @@ class OrcamentoServiceTest {
     void atualizarOrcamento_DeveLancarExcecao_QuandoEmpresaNaoExiste() {
         // Arrange
         OrcamentoDTO dto = new OrcamentoDTO(
-                1L, 999L, "Orçamento", "Cliente",
+                1, 999, "Orçamento", "Cliente",
                 BigDecimal.TEN
         );
 
-        when(orcamentoRepository.findById(1L)).thenReturn(Optional.of(orcamento));
-        when(empresaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(orcamentoRepository.findById(1)).thenReturn(Optional.of(orcamento));
+        when(empresaRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> orcamentoService.atualizarOrcamento(1L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> orcamentoService.atualizarOrcamento(1, dto));
         verify(orcamentoRepository, never()).save(any(Orcamento.class));
     }
 
     @Test
     void removerOrcamento_DeveRemover_QuandoExiste() {
         // Arrange
-        when(orcamentoRepository.findById(1L)).thenReturn(Optional.of(orcamento));
-        doNothing().when(orcamentoRepository).deleteById(1L);
+        when(orcamentoRepository.findById(1)).thenReturn(Optional.of(orcamento));
+        doNothing().when(orcamentoRepository).deleteById(1);
 
         // Act
-        orcamentoService.removerOrcamento(1L);
+        orcamentoService.removerOrcamento(1);
 
         // Assert
-        verify(orcamentoRepository, times(1)).findById(1L);
-        verify(orcamentoRepository, times(1)).deleteById(1L);
+        verify(orcamentoRepository, times(1)).findById(1);
+        verify(orcamentoRepository, times(1)).deleteById(1);
     }
 
     @Test
     void removerOrcamento_DeveLancarExcecao_QuandoNaoExiste() {
         // Arrange
-        when(orcamentoRepository.findById(999L)).thenReturn(Optional.empty());
+        when(orcamentoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> orcamentoService.removerOrcamento(999L));
-        verify(orcamentoRepository, times(1)).findById(999L);
-        verify(orcamentoRepository, never()).deleteById(anyLong());
+        assertThrows(ResourceNotFoundException.class, () -> orcamentoService.removerOrcamento(999));
+        verify(orcamentoRepository, times(1)).findById(999);
+        verify(orcamentoRepository, never()).deleteById(anyInt());
     }
 
     @Test
     void salvaOrcamento_DeveAceitarValoresDecimais() {
         // Arrange
         OrcamentoDTO dto = new OrcamentoDTO(
-                null, 1L, "Orçamento Decimal",
+                null, 1, "Orçamento Decimal",
                 "Cliente", new BigDecimal("1234.56")
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(orcamentoRepository.save(any(Orcamento.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
@@ -254,25 +254,25 @@ class OrcamentoServiceTest {
     void atualizarOrcamento_DeveManterEmpresaOriginalSeNecessario() {
         // Arrange
         Empresa novaEmpresa = new Empresa();
-        novaEmpresa.setId(2L);
+        novaEmpresa.setId(2);
         novaEmpresa.setRazaoSocial("Nova Empresa");
         novaEmpresa.setCnpj("98765432109876");
 
         OrcamentoDTO dto = new OrcamentoDTO(
-                1L, 2L, "Orçamento", "Cliente",
+                1, 2, "Orçamento", "Cliente",
                 new BigDecimal("500.00")
         );
 
-        when(orcamentoRepository.findById(1L)).thenReturn(Optional.of(orcamento));
-        when(empresaRepository.findById(2L)).thenReturn(Optional.of(novaEmpresa));
+        when(orcamentoRepository.findById(1)).thenReturn(Optional.of(orcamento));
+        when(empresaRepository.findById(2)).thenReturn(Optional.of(novaEmpresa));
         when(orcamentoRepository.save(any(Orcamento.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
-        Orcamento resultado = orcamentoService.atualizarOrcamento(1L, dto);
+        Orcamento resultado = orcamentoService.atualizarOrcamento(1, dto);
 
         // Assert
         assertEquals(novaEmpresa, resultado.getEmpresa());
-        assertEquals(2L, resultado.getEmpresa().getId());
+        assertEquals(2, resultado.getEmpresa().getId());
     }
 }
 

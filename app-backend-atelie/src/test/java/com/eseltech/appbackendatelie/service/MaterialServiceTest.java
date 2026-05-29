@@ -42,7 +42,7 @@ class MaterialServiceTest {
     void setUp() {
         // Setup Empresa
         empresa = new Empresa();
-        empresa.setId(1L);
+        empresa.setId(1);
         empresa.setRazaoSocial("Empresa Teste");
         empresa.setCnpj("12345678901234");
 
@@ -62,7 +62,7 @@ class MaterialServiceTest {
         // Arrange
         MaterialDTO dto = new MaterialDTO(
                 null,
-                1L,
+                1,
                 Categoria.CENTIMETRO,
                 "Papel Cartão Azul",
                 "Papel cartão da cor azul",
@@ -70,7 +70,7 @@ class MaterialServiceTest {
                 new BigDecimal("75.00")
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.save(any(Material.class))).thenAnswer(i -> {
             Material m = i.getArgument(0);
             m.setId(2);
@@ -95,11 +95,11 @@ class MaterialServiceTest {
     void salvarMaterial_DeveLancarExcecao_QuandoEmpresaNaoExiste() {
         // Arrange
         MaterialDTO dto = new MaterialDTO(
-                null, 999L, Categoria.GRAMA, "Material", "Descrição",
+                null, 999, Categoria.GRAMA, "Material", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN
         );
 
-        when(empresaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(empresaRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> materialService.salvarMaterial(dto));
@@ -110,12 +110,12 @@ class MaterialServiceTest {
     void salvarMaterial_DeveAceitarDiferentesCategorias() {
         // Arrange
         MaterialDTO dtoGrama = new MaterialDTO(
-                null, 1L, Categoria.GRAMA, "Glitter",
+                null, 1, Categoria.GRAMA, "Glitter",
                 "Glitter dourado", new BigDecimal("500.00"),
                 new BigDecimal("25.00")
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.save(any(Material.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
@@ -205,17 +205,17 @@ class MaterialServiceTest {
     void atualizarMaterial_DeveAtualizarComSucesso() {
         // Arrange
         MaterialDTO dto = new MaterialDTO(
-                1L,
-                1L,
+                1,
+                1,
                 Categoria.MILILITRO,
                 "Cola Branca Atualizada",
-                "Cola branca escolar 1L",
+                "Cola branca escolar 1",
                 new BigDecimal("1000.00"),
                 new BigDecimal("15.00")
         );
 
         when(materialRepository.findById(1)).thenReturn(Optional.of(material));
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.save(any(Material.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
@@ -224,7 +224,7 @@ class MaterialServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals("Cola Branca Atualizada", resultado.getNome());
-        assertEquals("Cola branca escolar 1L", resultado.getDescricao());
+        assertEquals("Cola branca escolar 1", resultado.getDescricao());
         assertEquals(Categoria.MILILITRO, resultado.getCategoria());
         assertEquals(new BigDecimal("1000.00"), resultado.getQtdEstoque());
         assertEquals(new BigDecimal("15.00"), resultado.getPreco());
@@ -236,7 +236,7 @@ class MaterialServiceTest {
     void atualizarMaterial_DeveLancarExcecao_QuandoMaterialNaoExiste() {
         // Arrange
         MaterialDTO dto = new MaterialDTO(
-                999L, 1L, Categoria.INTEIRO, "Material", "Descrição",
+                999, 1, Categoria.INTEIRO, "Material", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN
         );
 
@@ -251,12 +251,12 @@ class MaterialServiceTest {
     void atualizarMaterial_DeveLancarExcecao_QuandoEmpresaNaoExiste() {
         // Arrange
         MaterialDTO dto = new MaterialDTO(
-                1L, 999L, Categoria.INTEIRO, "Material", "Descrição",
+                1, 999, Categoria.INTEIRO, "Material", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN
         );
 
         when(materialRepository.findById(1)).thenReturn(Optional.of(material));
-        when(empresaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(empresaRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> materialService.atualizarMaterial(1, dto));
@@ -267,13 +267,13 @@ class MaterialServiceTest {
     void salvarMaterial_DeveAceitarValoresDecimaisPequenos() {
         // Arrange
         MaterialDTO dto = new MaterialDTO(
-                null, 1L, Categoria.GRAMA, "Material Preciso",
+                null, 1, Categoria.GRAMA, "Material Preciso",
                 "Material com medidas precisas",
                 new BigDecimal("0.01"),
                 new BigDecimal("0.01")
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.save(any(Material.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
@@ -289,13 +289,13 @@ class MaterialServiceTest {
     void salvarMaterial_DeveAceitarValoresDecimaisGrandes() {
         // Arrange
         MaterialDTO dto = new MaterialDTO(
-                null, 1L, Categoria.CENTIMETRO, "Tecido em Rolo",
+                null, 1, Categoria.CENTIMETRO, "Tecido em Rolo",
                 "Grande quantidade de tecido",
                 new BigDecimal("10000.50"),
                 new BigDecimal("5000.75")
         );
 
-        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(empresaRepository.findById(1)).thenReturn(Optional.of(empresa));
         when(materialRepository.save(any(Material.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act

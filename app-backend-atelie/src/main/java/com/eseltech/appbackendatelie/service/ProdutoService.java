@@ -151,7 +151,7 @@ public class ProdutoService {
     }
 
     @Transactional
-    public Produto salvarProdutoSimplificado(Long empresaId, String nome, String descricao,
+    public Produto salvarProdutoSimplificado(Integer empresaId, String nome, String descricao,
                                               BigDecimal custo, BigDecimal preco) {
         Empresa empresa = empresaRepository.findById(empresaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + empresaId));
@@ -168,7 +168,7 @@ public class ProdutoService {
     }
 
     @Transactional
-    public Produto salvarProdutoShopee(Long empresaId, String nome, String descricao, BigDecimal preco) {
+    public Produto salvarProdutoShopee(Integer empresaId, String nome, String descricao, BigDecimal preco) {
         logger.info("salvarProdutoShopee chamado - Nome: {}, Preço recebido: {}", nome, preco);
         
         Empresa empresa = empresaRepository.findById(empresaId)

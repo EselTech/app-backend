@@ -18,7 +18,7 @@ public record ProdutoDTO(
                 example = "1",
                 accessMode = Schema.AccessMode.READ_ONLY
         )
-        Long id,
+        Integer id,
 
         @NotNull(message = "O ID da empresa é obrigatório")
         @Schema(
@@ -26,7 +26,7 @@ public record ProdutoDTO(
                 example = "1",
                 requiredMode = Schema.RequiredMode.REQUIRED
         )
-        Long empresaId,
+        Integer empresaId,
 
         @NotNull(message = "O nome é obrigatório")
         @NotBlank(message = "O nome não pode estar em branco")

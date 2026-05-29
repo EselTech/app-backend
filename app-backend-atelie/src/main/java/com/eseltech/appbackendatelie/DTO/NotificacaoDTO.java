@@ -25,7 +25,7 @@ public record NotificacaoDTO(
                 example = "1",
                 requiredMode = Schema.RequiredMode.REQUIRED
         )
-        Long empresaId,
+        Integer empresaId,
 
         @NotNull(message = "O tópico é obrigatório")
         @NotBlank(message = "O tópico não pode estar em branco")
