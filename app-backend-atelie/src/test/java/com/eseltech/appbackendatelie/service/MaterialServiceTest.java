@@ -48,7 +48,7 @@ class MaterialServiceTest {
 
         // Setup Material
         material = new Material();
-        material.setId(1L);
+        material.setId(1);
         material.setNome("Papel Cartão Vermelho");
         material.setDescricao("Papel cartão da cor vermelha");
         material.setCategoria(Categoria.CENTIMETRO);
@@ -73,7 +73,7 @@ class MaterialServiceTest {
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
         when(materialRepository.save(any(Material.class))).thenAnswer(i -> {
             Material m = i.getArgument(0);
-            m.setId(2L);
+            m.setId(2);
             return m;
         });
 
@@ -129,26 +129,26 @@ class MaterialServiceTest {
     @Test
     void findById_DeveRetornarMaterial_QuandoExiste() {
         // Arrange
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material));
 
         // Act
-        Material resultado = materialService.findById(1L);
+        Material resultado = materialService.findById(1);
 
         // Assert
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getId());
+        assertEquals(Integer.valueOf(1), resultado.getId());
         assertEquals("Papel Cartão Vermelho", resultado.getNome());
-        verify(materialRepository, times(1)).findById(1L);
+        verify(materialRepository, times(1)).findById(1);
     }
 
     @Test
     void findById_DeveLancarExcecao_QuandoNaoExiste() {
         // Arrange
-        when(materialRepository.findById(999L)).thenReturn(Optional.empty());
+        when(materialRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> materialService.findById(999L));
-        verify(materialRepository, times(1)).findById(999L);
+        assertThrows(ResourceNotFoundException.class, () -> materialService.findById(999));
+        verify(materialRepository, times(1)).findById(999);
     }
 
     @Test
@@ -179,26 +179,26 @@ class MaterialServiceTest {
     @Test
     void removerMaterial_DeveRemover_QuandoExiste() {
         // Arrange
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material));
-        doNothing().when(materialRepository).deleteById(1L);
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material));
+        doNothing().when(materialRepository).deleteById(1);
 
         // Act
-        materialService.removerMaterial(1L);
+        materialService.removerMaterial(1);
 
         // Assert
-        verify(materialRepository, times(1)).findById(1L);
-        verify(materialRepository, times(1)).deleteById(1L);
+        verify(materialRepository, times(1)).findById(1);
+        verify(materialRepository, times(1)).deleteById(1);
     }
 
     @Test
     void removerMaterial_DeveLancarExcecao_QuandoNaoExiste() {
         // Arrange
-        when(materialRepository.findById(999L)).thenReturn(Optional.empty());
+        when(materialRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> materialService.removerMaterial(999L));
-        verify(materialRepository, times(1)).findById(999L);
-        verify(materialRepository, never()).deleteById(anyLong());
+        assertThrows(ResourceNotFoundException.class, () -> materialService.removerMaterial(999));
+        verify(materialRepository, times(1)).findById(999);
+        verify(materialRepository, never()).deleteById(anyInt());
     }
 
     @Test
@@ -214,12 +214,12 @@ class MaterialServiceTest {
                 new BigDecimal("15.00")
         );
 
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
         when(materialRepository.save(any(Material.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
-        Material resultado = materialService.atualizarMaterial(1L, dto);
+        Material resultado = materialService.atualizarMaterial(1, dto);
 
         // Assert
         assertNotNull(resultado);
@@ -228,7 +228,7 @@ class MaterialServiceTest {
         assertEquals(Categoria.MILILITRO, resultado.getCategoria());
         assertEquals(new BigDecimal("1000.00"), resultado.getQtdEstoque());
         assertEquals(new BigDecimal("15.00"), resultado.getPreco());
-        verify(materialRepository, times(1)).findById(1L);
+        verify(materialRepository, times(1)).findById(1);
         verify(materialRepository, times(1)).save(any(Material.class));
     }
 
@@ -240,10 +240,10 @@ class MaterialServiceTest {
                 BigDecimal.TEN, BigDecimal.TEN
         );
 
-        when(materialRepository.findById(999L)).thenReturn(Optional.empty());
+        when(materialRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> materialService.atualizarMaterial(999L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> materialService.atualizarMaterial(999, dto));
         verify(materialRepository, never()).save(any(Material.class));
     }
 
@@ -255,11 +255,11 @@ class MaterialServiceTest {
                 BigDecimal.TEN, BigDecimal.TEN
         );
 
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(empresaRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> materialService.atualizarMaterial(1L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> materialService.atualizarMaterial(1, dto));
         verify(materialRepository, never()).save(any(Material.class));
     }
 
@@ -307,5 +307,8 @@ class MaterialServiceTest {
         assertEquals(new BigDecimal("5000.75"), resultado.getPreco());
     }
 }
+
+
+
 
 

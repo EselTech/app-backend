@@ -63,7 +63,7 @@ class ProdutoServiceTest {
 
         // Setup Material
         material = new Material();
-        material.setId(1L);
+        material.setId(1);
         material.setNome("Papel Cartão");
         material.setDescricao("Papel cartão vermelho");
         material.setCategoria(Categoria.CENTIMETRO);
@@ -85,7 +85,7 @@ class ProdutoServiceTest {
     @Test
     void salvarProduto_DeveRetornarProdutoComCalculoCorreto() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("10.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("10.00"));
         List<MaterialProdutoDTO> materiais = List.of(materialDTO);
 
         ProdutoDTO dto = new ProdutoDTO(
@@ -107,7 +107,7 @@ class ProdutoServiceTest {
         );
 
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(impostoService.buscarTodos()).thenReturn(List.of(impostoDTO));
         when(produtoRepository.save(any(Produto.class))).thenAnswer(invocation -> {
             Produto p = invocation.getArgument(0);
@@ -159,7 +159,7 @@ class ProdutoServiceTest {
     @Test
     void salvarProduto_DeveLancarExcecao_QuandoMaterialNaoExiste() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(999L, new BigDecimal("10.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(999, new BigDecimal("10.00"));
         ProdutoDTO dto = new ProdutoDTO(
                 null, 1L, "Produto", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN, BigDecimal.ZERO,
@@ -167,7 +167,7 @@ class ProdutoServiceTest {
         );
 
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        when(materialRepository.findById(999L)).thenReturn(Optional.empty());
+        when(materialRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> produtoService.salvarProduto(dto));
@@ -177,7 +177,7 @@ class ProdutoServiceTest {
     @Test
     void salvarProduto_DeveTratarCustoMaoDeObraEMargemNulos() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("10.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("10.00"));
         ProdutoDTO dto = new ProdutoDTO(
                 null, 1L, "Produto", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN,
@@ -187,7 +187,7 @@ class ProdutoServiceTest {
         );
 
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
         when(produtoRepository.save(any(Produto.class))).thenAnswer(i -> i.getArgument(0));
         doNothing().when(twilioService).sendMessage(anyString());
@@ -208,7 +208,7 @@ class ProdutoServiceTest {
     @Test
     void salvarProduto_DeveCalcularComValoresDecimaisPequenos() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("0.01"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("0.01"));
         ProdutoDTO dto = new ProdutoDTO(
                 null, 1L, "Produto", "Descrição",
                 BigDecimal.TEN, BigDecimal.TEN,
@@ -218,7 +218,7 @@ class ProdutoServiceTest {
         );
 
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
         when(produtoRepository.save(any(Produto.class))).thenAnswer(i -> i.getArgument(0));
         doNothing().when(twilioService).sendMessage(anyString());
@@ -236,26 +236,26 @@ class ProdutoServiceTest {
     @Test
     void findById_DeveRetornarProduto_QuandoExiste() {
         // Arrange
-        when(produtoRepository.findById(1L)).thenReturn(Optional.of(produto));
+        when(produtoRepository.findById(1)).thenReturn(Optional.of(produto));
 
         // Act
-        Produto resultado = produtoService.findById(1L);
+        Produto resultado = produtoService.findById(1);
 
         // Assert
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
         assertEquals("Sacola Personalizada", resultado.getNome());
-        verify(produtoRepository, times(1)).findById(1L);
+        verify(produtoRepository, times(1)).findById(1);
     }
 
     @Test
     void findById_DeveLancarExcecao_QuandoNaoExiste() {
         // Arrange
-        when(produtoRepository.findById(999L)).thenReturn(Optional.empty());
+        when(produtoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> produtoService.findById(999L));
-        verify(produtoRepository, times(1)).findById(999L);
+        assertThrows(ResourceNotFoundException.class, () -> produtoService.findById(999));
+        verify(produtoRepository, times(1)).findById(999);
     }
 
     @Test
@@ -286,32 +286,32 @@ class ProdutoServiceTest {
     @Test
     void removerProduto_DeveRemover_QuandoExiste() {
         // Arrange
-        when(produtoRepository.findById(1L)).thenReturn(Optional.of(produto));
-        doNothing().when(produtoRepository).deleteById(1L);
+        when(produtoRepository.findById(1)).thenReturn(Optional.of(produto));
+        doNothing().when(produtoRepository).deleteById(1);
 
         // Act
-        produtoService.removerProduto(1L);
+        produtoService.removerProduto(1);
 
         // Assert
-        verify(produtoRepository, times(1)).findById(1L);
-        verify(produtoRepository, times(1)).deleteById(1L);
+        verify(produtoRepository, times(1)).findById(1);
+        verify(produtoRepository, times(1)).deleteById(1);
     }
 
     @Test
     void removerProduto_DeveLancarExcecao_QuandoNaoExiste() {
         // Arrange
-        when(produtoRepository.findById(999L)).thenReturn(Optional.empty());
+        when(produtoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> produtoService.removerProduto(999L));
-        verify(produtoRepository, times(1)).findById(999L);
-        verify(produtoRepository, never()).deleteById(anyLong());
+        assertThrows(ResourceNotFoundException.class, () -> produtoService.removerProduto(999));
+        verify(produtoRepository, times(1)).findById(999);
+        verify(produtoRepository, never()).deleteById(anyInt());
     }
 
     @Test
     void atualizarProduto_DeveAtualizarComSucesso() {
         // Arrange
-        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1L, new BigDecimal("15.00"));
+        MaterialProdutoDTO materialDTO = new MaterialProdutoDTO(1, new BigDecimal("15.00"));
         ProdutoDTO dto = new ProdutoDTO(
                 1L, 1L, "Produto Atualizado", "Nova descrição",
                 BigDecimal.TEN, BigDecimal.TEN,
@@ -320,20 +320,20 @@ class ProdutoServiceTest {
                 List.of(materialDTO)
         );
 
-        when(produtoRepository.findById(1L)).thenReturn(Optional.of(produto));
+        when(produtoRepository.findById(1)).thenReturn(Optional.of(produto));
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        when(materialRepository.findById(1L)).thenReturn(Optional.of(material));
+        when(materialRepository.findById(1)).thenReturn(Optional.of(material));
         when(impostoService.buscarTodos()).thenReturn(new ArrayList<>());
         when(produtoRepository.save(any(Produto.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
-        Produto resultado = produtoService.atualizarProduto(1L, dto);
+        Produto resultado = produtoService.atualizarProduto(1, dto);
 
         // Assert
         assertNotNull(resultado);
         assertEquals("Produto Atualizado", resultado.getNome());
         assertEquals("Nova descrição", resultado.getDescricao());
-        verify(produtoRepository, times(1)).findById(1L);
+        verify(produtoRepository, times(1)).findById(1);
         verify(produtoRepository, times(1)).save(any(Produto.class));
     }
 
@@ -346,10 +346,10 @@ class ProdutoServiceTest {
                 BigDecimal.ZERO, new ArrayList<>()
         );
 
-        when(produtoRepository.findById(999L)).thenReturn(Optional.empty());
+        when(produtoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> produtoService.atualizarProduto(999L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> produtoService.atualizarProduto(999, dto));
         verify(produtoRepository, never()).save(any(Produto.class));
     }
 
@@ -402,10 +402,4 @@ class ProdutoServiceTest {
         verify(produtoRepository, times(1)).save(any(Produto.class));
     }
 }
-
-
-
-
-
-
 

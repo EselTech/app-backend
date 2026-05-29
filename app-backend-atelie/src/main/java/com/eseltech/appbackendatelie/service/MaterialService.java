@@ -80,13 +80,13 @@ public class MaterialService {
     public void reduzirEstoqueMateriais(Pedido pedido) {
         List<ProdutosPedido> listaProdutos = pedido.getListaProdutos();
 
-        Map<Long, BigDecimal> materiaisParaReduzir = new HashMap<>();
+        Map<Integer, BigDecimal> materiaisParaReduzir = new HashMap<>();
 
         for (ProdutosPedido produtosPedido : listaProdutos) {
             Produto produto = produtosPedido.getProduto();
 
             for (MaterialProduto materialProduto : produto.getListaMateriais()) {
-                Long materialId = materialProduto.getMaterial().getId();
+                Integer materialId = materialProduto.getMaterial().getId();
                 BigDecimal quantidadeTotal = materiaisParaReduzir.getOrDefault(materialId, BigDecimal.ZERO);
                 quantidadeTotal = quantidadeTotal.add(materialProduto.getQuantidade().multiply(BigDecimal.valueOf(produtosPedido.getQtdProduto())));
                 materiaisParaReduzir.put(materialId, quantidadeTotal);
