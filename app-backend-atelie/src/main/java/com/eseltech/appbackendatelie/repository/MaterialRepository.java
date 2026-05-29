@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.repository;
 
+import com.eseltech.appbackendatelie.DTO.home.UsoMaterialCategoriaDTO;
 import com.eseltech.appbackendatelie.entity.Material;
 import com.eseltech.appbackendatelie.DTO.dash.*;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,4 +39,34 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
         ORDER BY total_alertas_reposicao ASC, m.qtd_estoque DESC LIMIT 1
     """, nativeQuery = true)
     MaterialKpiDTO buscarMaterialMenosUtilizado(@Param("empresaId") Integer empresaId);
+
+    @Query(value = """
+        SELECT 
+            temp.id, 
+            temp.categoria, 
+            temp.valorTotal, 
+            temp.nome
+        FROM (
+            SELECT 
+                m.id AS id,
+                m.metragem AS categoria, 
+                m.nome AS nome,
+                COALESCE(SUM(pp.qtd_produto * mp.quantidade), 0) AS valorTotal,
+                ROW_NUMBER() OVER (
+                    PARTITION BY m.metragem 
+                    ORDER BY SUM(pp.qtd_produto * mp.quantidade) DESC
+                ) AS rn 
+            FROM pedido ped
+            INNER JOIN produtos_pedido pp ON ped.id = pp.pedido_id
+            INNER JOIN material_produto mp ON pp.produto_id = mp.fk_produto
+            INNER JOIN material m ON mp.fk_material = m.id
+            WHERE ped.empresa_id = :empresaId
+              AND ped.status = 'shipped'
+              AND ped.prazo >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+              AND ped.prazo < DATE_FORMAT(CURDATE(), '%Y-%m-01') + INTERVAL 1 MONTH
+            GROUP BY m.id, m.nome, m.metragem 
+        ) AS temp
+        WHERE temp.rn = 1
+    """, nativeQuery = true)
+    List<UsoMaterialCategoriaDTO> buscarMaterialMaisUsadoPorCategoria(@Param("empresaId") Integer empresaId);
 }

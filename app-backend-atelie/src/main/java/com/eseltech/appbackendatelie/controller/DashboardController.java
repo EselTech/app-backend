@@ -19,12 +19,11 @@ public class DashboardController {
     @GetMapping
     public ResponseEntity<DashboardResponseDTO> getDashboard(@RequestParam Integer empresaId) {
         try {
-            // Agora passamos o ID recebido na URL para o Service
+
             DashboardResponseDTO dadosDaDashboard = service.montarDashboard(empresaId);
             return ResponseEntity.ok(dadosDaDashboard);
 
         } catch (Exception e) {
-            // Opcional: logar o erro para saber o que aconteceu no console
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }

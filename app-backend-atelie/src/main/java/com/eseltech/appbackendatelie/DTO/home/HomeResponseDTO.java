@@ -8,5 +8,6 @@ public record HomeResponseDTO(
         ReceberKPIDTO receberKPIDTO,
         ReceitaKPIDTO receitaKPIDTO,
         List<PedidoPorStatusDTO> pedidosPorStatus,
-        List<ProdutoMaisVendidoMesDTO> produtosMaisVendidos
+        List<ProdutoMaisVendidoMesDTO> produtosMaisVendidos,
+        List<UsoMaterialCategoriaDTO> materiaisPorCategoria
 ) {}
