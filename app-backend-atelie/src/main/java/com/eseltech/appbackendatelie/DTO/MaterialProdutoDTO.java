@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Validated
 @Schema(description = "DTO para representar a relação entre material e produto")
 public record MaterialProdutoDTO(
-        Long materialId,
+        Integer materialId,
 
         @NotNull(message = "A quantidade utilizada é obrigatória")
         @Positive(message = "A quantidade deve ser positiva")

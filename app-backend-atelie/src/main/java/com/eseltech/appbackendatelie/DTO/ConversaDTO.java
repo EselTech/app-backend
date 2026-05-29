@@ -39,11 +39,11 @@ public record ConversaDTO(
 
         @NotNull(message = "O emissor é obrigatório")
         @Schema(
-                description = "Indica quem enviou a mensagem (true = beneficiária, false = sistema/empresa)",
-                example = "true",
+                description = "Indica quem enviou a mensagem (1 = beneficiária, 0 = sistema/empresa)",
+                example = "1",
                 requiredMode = Schema.RequiredMode.REQUIRED
         )
-        Boolean emissor,
+        Integer emissor,
 
         @NotNull(message = "A data/hora da conversa é obrigatória")
         @Schema(

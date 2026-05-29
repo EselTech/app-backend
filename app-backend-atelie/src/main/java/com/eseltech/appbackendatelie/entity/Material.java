@@ -40,7 +40,7 @@ public class Material {
     private String descricao;
 
     @Positive
-    @Column(name = "qtdEstoque", nullable = false)
+    @Column(name = "qtd_estoque", nullable = false)
     @Schema(description = "Quantidade do material em estoque de acordo com a categoria", example = "50ml", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal qtdEstoque;
 

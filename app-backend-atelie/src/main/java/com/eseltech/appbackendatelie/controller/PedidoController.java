@@ -187,5 +187,10 @@ public class PedidoController {
     public ResponseEntity<Pedido> updatePedido(@PathVariable Integer id, @RequestBody @Valid PedidoDTO pedidoDTO) {
         return ResponseEntity.ok(pedidoService.atualizarPedido(id, pedidoDTO));
     }
+
+    @PatchMapping("atualizar-status/{id}")
+    public ResponseEntity<Pedido> atualizarStatus(@PathVariable Integer id, @RequestParam String status) {
+        return ResponseEntity.ok(pedidoService.atualizarStatusPedido(id, status));
+    }
 }
 

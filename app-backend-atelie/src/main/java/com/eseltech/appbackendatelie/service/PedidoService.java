@@ -71,7 +71,7 @@ public class PedidoService {
 
     private void processarProdutos(PedidoDTO dto, Pedido pedido) {
         for (ProdutosPedidoDTO ppDTO : dto.listaProdutos()) {
-            Produto produto = produtoRepository.findById(ppDTO.produtoId().longValue())
+            Produto produto = produtoRepository.findById(ppDTO.produtoId())
                     .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + ppDTO.produtoId()));
 
             ProdutosPedido produtosPedido = new ProdutosPedido();
@@ -100,6 +100,15 @@ public class PedidoService {
         if (dto.listaProdutos() != null && !dto.listaProdutos().isEmpty()) {
             processarProdutos(dto, pedido);
         }
+
+        return pedidoRepository.save(pedido);
+    }
+
+    public Pedido atualizarStatusPedido(Integer id, String status) {
+
+        Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com id: " + id));
+
+        pedido.setStatus(status);
 
         return pedidoRepository.save(pedido);
     }

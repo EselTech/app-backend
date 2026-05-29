@@ -30,8 +30,8 @@ public class Conversa {
 
     @NotNull
     @Column(name = "emissor", nullable = false)
-    @Schema(description = "Quem enviou a mensagem", example = "1 = true = beneficiária", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Boolean emissor;
+    @Schema(description = "Quem enviou a mensagem", example = "1 = beneficiária", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer emissor;
 
     @NotNull
     @Column(name = "dtHoraConversa", nullable = false)
@@ -41,7 +41,7 @@ public class Conversa {
     public Conversa() {
     }
 
-    public Conversa(Empresa empresa, String mensagem, Boolean emissor, LocalDateTime dtHoraConversa) {
+    public Conversa(Empresa empresa, String mensagem, Integer emissor, LocalDateTime dtHoraConversa) {
         this.empresa = empresa;
         this.mensagem = mensagem;
         this.emissor = emissor;
@@ -72,11 +72,11 @@ public class Conversa {
         this.mensagem = mensagem;
     }
 
-    public Boolean getEmissor() {
+    public Integer getEmissor() {
         return emissor;
     }
 
-    public void setEmissor(Boolean emissor) {
+    public void setEmissor(Integer emissor) {
         this.emissor = emissor;
     }
 
