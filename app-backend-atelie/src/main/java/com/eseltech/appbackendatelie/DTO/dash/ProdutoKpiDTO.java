@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 // Para KPIs de Produto
 public record ProdutoKpiDTO(
-        Long id,
+        Integer id,
         String nome,
         BigDecimal preco,
         Long totalPedidos,

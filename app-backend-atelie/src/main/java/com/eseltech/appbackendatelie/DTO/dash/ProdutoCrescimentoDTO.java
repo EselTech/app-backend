@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 // Para Gráficos de Crescimento (CAGR)
 public record ProdutoCrescimentoDTO(
-        Long id,
+        Integer id,
         String nome,
         BigDecimal preco,
         BigDecimal vendasMesAnterior,

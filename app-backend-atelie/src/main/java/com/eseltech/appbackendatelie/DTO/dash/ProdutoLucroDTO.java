@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 // Para Gráfico de Produtos com Maior Lucro
 public record ProdutoLucroDTO(
-        Long id,
+        Integer id,
         String nome,
         BigDecimal custo,
         BigDecimal preco,
