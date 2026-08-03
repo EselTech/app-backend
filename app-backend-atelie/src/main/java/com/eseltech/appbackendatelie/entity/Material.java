@@ -18,7 +18,7 @@ public class Material {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     @Schema(description = "Identificador único do material", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     private Empresa empresa;
@@ -40,7 +40,7 @@ public class Material {
     private String descricao;
 
     @Positive
-    @Column(name = "qtdEstoque", nullable = false)
+    @Column(name = "qtd_estoque", nullable = false)
     @Schema(description = "Quantidade do material em estoque de acordo com a categoria", example = "50ml", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal qtdEstoque;
 
@@ -61,11 +61,11 @@ public class Material {
         this.preco = preco;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

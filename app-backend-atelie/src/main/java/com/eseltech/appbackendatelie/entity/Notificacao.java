@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.entity;
 
+import com.eseltech.appbackendatelie.DTO.NotificacaoDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -34,7 +35,7 @@ public class Notificacao {
     private String mensagem;
 
     @NotNull
-    @Column(name = "dtEnvio", nullable = false)
+    @Column(name = "dtEnvio", nullable = true)
     @Schema(description = "Data em que a mensagem foi enviada", example = "06/04/2026", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime dtEnvio;
 
@@ -86,5 +87,15 @@ public class Notificacao {
 
     public void setDtEnvio(LocalDateTime dtEnvio) {
         this.dtEnvio = dtEnvio;
+    }
+
+    public NotificacaoDTO toDTO() {
+        return new NotificacaoDTO(
+                this.id,
+                this.empresa.getId(),
+                this.topico,
+                this.mensagem,
+                this.dtEnvio
+        );
     }
 }

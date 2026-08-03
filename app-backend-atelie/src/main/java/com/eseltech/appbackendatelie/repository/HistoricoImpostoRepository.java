@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2024
  */
 @Repository
-public interface HistoricoImpostoRepository extends JpaRepository<HistoricoImposto, Long> {
+public interface HistoricoImpostoRepository extends JpaRepository<HistoricoImposto, Integer> {
 
     /**
      * Busca um registro de histórico pelo ID do imposto.

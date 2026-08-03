@@ -3,6 +3,7 @@ package com.eseltech.appbackendatelie.service;
 import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
 import com.eseltech.appbackendatelie.DTO.RegisterDTO;
 import com.eseltech.appbackendatelie.DTO.TokenPairDTO;
+import com.eseltech.appbackendatelie.DTO.request.AtualizarSenhaRequest;
 import com.eseltech.appbackendatelie.entity.Usuario;
 import com.eseltech.appbackendatelie.exceptions.ResourceNotFoundException;
 import com.eseltech.appbackendatelie.repository.UsuarioRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class UsuarioService {
@@ -25,6 +27,10 @@ public class UsuarioService {
 
     @Autowired
     private TokenService tokenService;
+
+    private final Logger logger = Logger.getLogger(UsuarioService.class.getName());
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public void registrarUsuario(RegisterDTO registerDTO) {
         if (usuarioRepository.findByUsername(registerDTO.username()) != null) {
@@ -41,17 +47,33 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Usuario buscarUsuarioPorId(Long id) {
+    public Usuario buscarUsuarioPorId(Integer id) {
         return usuarioRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }
 
-    public void atualizarUsuario(Usuario usuario, Long id) {
+    public void atualizarUsuario(Usuario usuario, Integer id) {
         Usuario usuarioExistente = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado com id: " + id));
-        usuarioExistente = usuario;
+        usuarioExistente.setNome(usuario.getNome());
+        usuarioExistente.setEmail(usuario.getEmail());
+        usuarioExistente.setRole(usuario.getRole());
+        usuarioExistente.setUsername(usuario.getUsername());
+        usuarioExistente.setEmpresa(usuario.getEmpresa());
         usuarioRepository.save(usuarioExistente);
     }
 
-    public void removerUsuario(Long id) {
+    public void atualizarSenha(AtualizarSenhaRequest request) {
+        Usuario usuario = usuarioRepository.findById(request.userID()).orElseThrow(() -> new RuntimeException("Usuário não encontrado com id: " + request.userID()));
+
+        if (encoder.matches(request.senhaAntiga(), usuario.getSenha())) {
+            String novaSenhaCriptografada = encoder.encode(request.novaSenha());
+            usuario.setSenha(novaSenhaCriptografada);
+            usuarioRepository.save(usuario);
+        } else {
+            throw new RuntimeException("Senha antiga incorreta");
+        }
+    }
+
+    public void removerUsuario(Integer id) {
         usuarioRepository.deleteById(id);
     }
 

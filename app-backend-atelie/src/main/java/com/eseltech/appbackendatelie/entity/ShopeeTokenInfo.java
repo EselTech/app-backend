@@ -15,7 +15,7 @@ public class ShopeeTokenInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     @Schema(description = "Identificador único do registro de token", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
-    private Long id;
+    private Integer id;
 
     @NotNull
     @Column(name = "shop_id", nullable = false, unique = true)
@@ -72,11 +72,11 @@ public class ShopeeTokenInfo {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

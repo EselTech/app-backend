@@ -55,13 +55,13 @@ public class ProdutoService {
         return lista;
     }
 
-    public Produto findById(Long id) {
+    public Produto findById(Integer id) {
         Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + id));
 
         return produto;
     }
 
-    public void removerProduto(Long id) {
+    public void removerProduto(Integer id) {
         Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + id));
 
         produtoRepository.deleteById(id);
@@ -151,7 +151,7 @@ public class ProdutoService {
     }
 
     @Transactional
-    public Produto salvarProdutoSimplificado(Long empresaId, String nome, String descricao,
+    public Produto salvarProdutoSimplificado(Integer empresaId, String nome, String descricao,
                                               BigDecimal custo, BigDecimal preco) {
         Empresa empresa = empresaRepository.findById(empresaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + empresaId));
@@ -168,7 +168,7 @@ public class ProdutoService {
     }
 
     @Transactional
-    public Produto salvarProdutoShopee(Long empresaId, String nome, String descricao, BigDecimal preco) {
+    public Produto salvarProdutoShopee(Integer empresaId, String nome, String descricao, BigDecimal preco) {
         logger.info("salvarProdutoShopee chamado - Nome: {}, Preço recebido: {}", nome, preco);
         
         Empresa empresa = empresaRepository.findById(empresaId)
@@ -195,7 +195,7 @@ public class ProdutoService {
     }
 
     @Transactional
-    public Produto atualizarProduto(Long id, ProdutoDTO dto) {
+    public Produto atualizarProduto(Integer id, ProdutoDTO dto) {
         Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + id));
         Empresa empresa = empresaRepository.findById(dto.empresaId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
 

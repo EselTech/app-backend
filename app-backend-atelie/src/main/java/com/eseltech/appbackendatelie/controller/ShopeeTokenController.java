@@ -37,7 +37,7 @@ public class ShopeeTokenController {
     })
     public ResponseEntity<Map<String, String>> getAccessToken(
             @Parameter(description = "ID da loja na Shopee", required = true)
-            @PathVariable Long shopId) {
+            @PathVariable Integer shopId) {
 
         String accessToken = shopeeTokenService.getValidAccessToken(shopId);
 
@@ -70,7 +70,7 @@ public class ShopeeTokenController {
     })
     public ResponseEntity<ShopeeTokenInfo> getTokenInfo(
             @Parameter(description = "ID da loja na Shopee", required = true)
-            @PathVariable Long shopId) {
+            @PathVariable Integer shopId) {
 
         ShopeeTokenInfo tokenInfo = shopeeTokenService.getTokenInfo(shopId);
         return ResponseEntity.ok(tokenInfo);
@@ -84,7 +84,7 @@ public class ShopeeTokenController {
     })
     public ResponseEntity<Map<String, Boolean>> checkTokenExists(
             @Parameter(description = "ID da loja na Shopee", required = true)
-            @PathVariable Long shopId) {
+            @PathVariable Integer shopId) {
 
         boolean exists = shopeeTokenService.hasTokenInfo(shopId);
 
@@ -103,7 +103,7 @@ public class ShopeeTokenController {
     })
     public ResponseEntity<Void> deleteTokenInfo(
             @Parameter(description = "ID da loja na Shopee", required = true)
-            @PathVariable Long shopId) {
+            @PathVariable Integer shopId) {
 
         shopeeTokenService.deleteTokenInfo(shopId);
         return ResponseEntity.noContent().build();

@@ -33,7 +33,7 @@ public class OrcamentoService {
         return lista;
     }
 
-    public Orcamento findById(Long id) {
+    public Orcamento findById(Integer id) {
         Orcamento orcamento = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Orcamento não encontrado com id: " + id));
 
         return orcamento;
@@ -53,7 +53,7 @@ public class OrcamentoService {
     }
 
     @Transactional
-    public Orcamento atualizarOrcamento(Long id, OrcamentoDTO dto) {
+    public Orcamento atualizarOrcamento(Integer id, OrcamentoDTO dto) {
         Orcamento orcamento = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Orcamento não encontrado com id: " + id));
         Empresa empresa = empresaRepository.findById(dto.empresaId()).orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com id: " + dto.empresaId()));
 
@@ -65,7 +65,7 @@ public class OrcamentoService {
         return repository.save(orcamento);
     }
 
-    public void removerOrcamento(Long id) {
+    public void removerOrcamento(Integer id) {
         Orcamento orcamento = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + id));
 
         repository.deleteById(id);

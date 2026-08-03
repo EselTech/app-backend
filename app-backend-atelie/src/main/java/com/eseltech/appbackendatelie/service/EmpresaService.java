@@ -10,7 +10,7 @@ public class EmpresaService {
     @Autowired
     private EmpresaRepository empresaRepository;
 
-    public Empresa findById(Long id) {
+    public Empresa findById(Integer id) {
         Empresa empresa = empresaRepository.findById(id).orElseThrow(() -> new RuntimeException("Empresa não encontrada com id: " + id));
         return empresa;
     }

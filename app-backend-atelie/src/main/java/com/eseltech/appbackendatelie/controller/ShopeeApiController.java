@@ -38,7 +38,7 @@ public class ShopeeApiController {
     })
     public ResponseEntity<Map<String, Object>> listarProdutos(
             @Parameter(description = "ID da loja na Shopee", required = true)
-            @PathVariable Long shopId,
+            @PathVariable Integer shopId,
             @Parameter(description = "Offset para paginação")
             @RequestParam(required = false, defaultValue = "0") Integer offset,
             @Parameter(description = "Quantidade de itens por página")
@@ -58,9 +58,9 @@ public class ShopeeApiController {
     })
     public ResponseEntity<Map<String, Object>> obterDetalhesProduto(
             @Parameter(description = "ID da loja na Shopee", required = true)
-            @PathVariable Long shopId,
+            @PathVariable Integer shopId,
             @Parameter(description = "ID do produto na Shopee", required = true)
-            @PathVariable Long itemId) {
+            @PathVariable Integer itemId) {
 
         Map<String, Object> detalhes = shopeeApiService.obterDetalhesProduto(shopId, itemId);
         return ResponseEntity.ok(detalhes);
@@ -77,7 +77,7 @@ public class ShopeeApiController {
     })
     public ResponseEntity<Map<String, Object>> atualizarEstoque(
             @Parameter(description = "ID da loja na Shopee", required = true)
-            @PathVariable Long shopId,
+            @PathVariable Integer shopId,
             @Parameter(description = "ID do produto na Shopee", required = true)
             @PathVariable Long itemId,
             @Parameter(description = "Dados para atualização de estoque", required = true)
@@ -97,7 +97,7 @@ public class ShopeeApiController {
     })
     public ResponseEntity<Map<String, Object>> fazerRequisicaoGet(
             @Parameter(description = "ID da loja na Shopee", required = true)
-            @PathVariable Long shopId,
+            @PathVariable Integer shopId,
             @Parameter(description = "Path da API (ex: /api/v2/product/get_category)", required = true)
             @RequestParam String path,
             @Parameter(description = "Parâmetros adicionais da requisição")
@@ -117,7 +117,7 @@ public class ShopeeApiController {
     })
     public ResponseEntity<Map<String, Object>> fazerRequisicaoPost(
             @Parameter(description = "ID da loja na Shopee", required = true)
-            @PathVariable Long shopId,
+            @PathVariable Integer shopId,
             @Parameter(description = "Path da API (ex: /api/v2/product/add_item)", required = true)
             @RequestParam String path,
             @Parameter(description = "Corpo da requisição", required = true)

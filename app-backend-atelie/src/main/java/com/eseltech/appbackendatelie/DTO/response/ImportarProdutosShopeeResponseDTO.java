@@ -21,7 +21,7 @@ public record ImportarProdutosShopeeResponseDTO(
     @Schema(description = "Detalhes de um erro de importação")
     public record ErroImportacao(
             @Schema(description = "ID do item na Shopee", example = "123456")
-            Long itemId,
+            Integer itemId,
 
             @Schema(description = "Nome do produto", example = "Produto Exemplo")
             String nomeProduto,

@@ -1,5 +1,6 @@
 package com.eseltech.appbackendatelie.DTO;
 
+import com.eseltech.appbackendatelie.entity.Notificacao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -58,5 +59,13 @@ public record NotificacaoDTO(
         )
         LocalDateTime dtEnvio
 ) {
+        public Notificacao toEntity(){
+                Notificacao notificacao = new Notificacao();
+                notificacao.setId(id);
+                notificacao.setMensagem(mensagem);
+                notificacao.setTopico(topico);
+                notificacao.setDtEnvio(dtEnvio);
+                return notificacao;
+        }
 }
 

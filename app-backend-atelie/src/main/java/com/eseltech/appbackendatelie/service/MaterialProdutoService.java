@@ -10,7 +10,7 @@ public class MaterialProdutoService {
     @Autowired
     private MaterialProdutoRepository materialProdutoRepository;
 
-    public MaterialProduto findById(Long id) {
+    public MaterialProduto findById(Integer id) {
         MaterialProduto materialProduto = materialProdutoRepository.findById(id).orElseThrow(() -> new RuntimeException("MaterialProduto não encontrado com id: " + id));
         return materialProduto;
     }

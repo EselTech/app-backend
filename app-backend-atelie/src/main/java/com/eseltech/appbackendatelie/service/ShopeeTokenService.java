@@ -37,7 +37,7 @@ public class ShopeeTokenService {
     }
 
     @Transactional
-    public String getValidAccessToken(Long shopId) {
+    public String getValidAccessToken(Integer shopId) {
         logger.info("Buscando access token válido para shopId: {}", shopId);
 
         // Busca a credencial no banco
@@ -143,19 +143,19 @@ public class ShopeeTokenService {
         return tokenRepository.save(tokenInfo);
     }
 
-    public ShopeeTokenInfo getTokenInfo(Long shopId) {
+    public ShopeeTokenInfo getTokenInfo(Integer shopId) {
         return tokenRepository.findByShopId(shopId)
                 .orElseThrow(() -> new ShopeeTokenNotFoundException(
                     String.format("Credenciais não encontradas para a loja com ID: %d", shopId)
                 ));
     }
 
-    public boolean hasTokenInfo(Long shopId) {
+    public boolean hasTokenInfo(Integer shopId) {
         return tokenRepository.existsByShopId(shopId);
     }
 
     @Transactional
-    public void deleteTokenInfo(Long shopId) {
+    public void deleteTokenInfo(Integer shopId) {
         logger.info("Removendo credenciais para shopId: {}", shopId);
         ShopeeTokenInfo tokenInfo = getTokenInfo(shopId);
         tokenRepository.delete(tokenInfo);

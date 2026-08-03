@@ -8,11 +8,11 @@ import jakarta.validation.constraints.Positive;
 public record ImportarProdutosShopeeRequestDTO(
         @NotNull(message = "O ID da loja Shopee é obrigatório")
         @Schema(description = "ID da loja na Shopee", example = "123456789", requiredMode = Schema.RequiredMode.REQUIRED)
-        Long shopId,
+        Integer shopId,
 
         @NotNull(message = "O ID da empresa é obrigatório")
         @Schema(description = "ID da empresa para associar os produtos importados", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-        Long empresaId,
+        Integer empresaId,
 
         @Positive(message = "O tamanho da página deve ser positivo")
         @Schema(description = "Quantidade de produtos a importar por vez (padrão: 100)", example = "100")

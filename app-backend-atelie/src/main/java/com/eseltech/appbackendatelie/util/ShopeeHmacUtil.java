@@ -41,7 +41,7 @@ public class ShopeeHmacUtil {
     }
 
     public static String buildBaseStringWithToken(Long partnerId, String path, Long timestamp,
-                                                   String accessToken, Long shopId) {
+                                                   String accessToken, Integer shopId) {
         StringBuilder baseString = new StringBuilder();
         baseString.append(partnerId);
         baseString.append(path);
