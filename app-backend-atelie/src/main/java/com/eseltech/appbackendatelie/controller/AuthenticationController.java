@@ -5,7 +5,9 @@ import com.eseltech.appbackendatelie.DTO.AuthenticationDTO;
 import com.eseltech.appbackendatelie.DTO.RegisterDTO;
 import com.eseltech.appbackendatelie.DTO.TokenPairDTO;
 import com.eseltech.appbackendatelie.repository.UsuarioRepository;
+import com.eseltech.appbackendatelie.service.LoginRateLimiterService;
 import com.eseltech.appbackendatelie.service.UsuarioService;
+import io.github.bucket4j.Bucket;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -13,9 +15,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -41,6 +45,9 @@ public class AuthenticationController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private LoginRateLimiterService rateLimiterService;
 
     @Operation(
             summary = "Realizar login",
@@ -93,8 +100,17 @@ public class AuthenticationController {
             )
     })
     @PostMapping("/login")
-    public ResponseEntity<?> logar(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<?> logar(@RequestBody @Valid AuthenticationDTO authenticationDTO, HttpServletRequest request) {
         try {
+            String clientIp = extrairIp(request);
+
+            Bucket bucket = rateLimiterService.resolveBucket(clientIp);
+
+            if (!bucket.tryConsume(1)) {
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                        .body("Muitas tentativas de login falhas. Por favor, aguarde 1 minuto e tente novamente.");
+            }
+
             TokenPairDTO tokens = usuarioService.logar(authenticationDTO);
 
             ResponseCookie accessTokenCookie = ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, tokens.accessToken())
@@ -236,5 +252,18 @@ public class AuthenticationController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    private String extrairIp(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        }
+
+        if (ipAddress != null && ipAddress.contains(",")) {
+            ipAddress = ipAddress.split(",")[0].trim();
+        }
+        return ipAddress;
     }
 }
