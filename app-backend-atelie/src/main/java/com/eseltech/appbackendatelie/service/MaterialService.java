@@ -7,6 +7,8 @@ import com.eseltech.appbackendatelie.exceptions.ResourceNotFoundException;
 import com.eseltech.appbackendatelie.repository.EmpresaRepository;
 import com.eseltech.appbackendatelie.repository.MaterialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +28,25 @@ public class MaterialService {
     @Autowired
     private NotificacaoService notificacaoService;
 
-    public List<Material> findAll() {
-        List<Material> lista = materialRepository.findAll();
+    public Page<MaterialDTO> findAll(Pageable pageable) {
+        Page<Material> lista = materialRepository.findAll(pageable);
 
         if (lista.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum material encontrado");
         }
 
-        return lista;
+        return lista.map(material -> {
+            MaterialDTO dto = new MaterialDTO(
+                    material.getId(),
+                    material.getEmpresa().getId(),
+                    material.getCategoria(),
+                    material.getNome(),
+                    material.getDescricao(),
+                    material.getQtdEstoque(),
+                    material.getPreco()
+            );
+            return dto;
+        });
     }
 
     public Material findById(Integer id) {
