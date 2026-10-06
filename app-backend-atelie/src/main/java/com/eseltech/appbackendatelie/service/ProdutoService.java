@@ -14,6 +14,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,14 +47,28 @@ public class ProdutoService {
     private TwilioService twilioService;
 
 
-    public List<Produto> findAll() {
-        List<Produto> lista = produtoRepository.findAll();
+    public Page<ProdutoDTO> findAll(Pageable pageable) {
+        Page<Produto> lista = produtoRepository.findAll(pageable);
 
         if (lista.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum produto encontrado");
         }
 
-        return lista;
+        return lista.map(produto -> new ProdutoDTO(
+                produto.getId(),
+                produto.getEmpresa().getId(),
+                produto.getNome(),
+                produto.getDescricao(),
+                produto.getCusto(),
+                produto.getPreco(),
+                obterCustoMaoDeObra(produto.getListaMateriais()),
+                obterMargemLucroPercentual(produto.getCusto(), produto.getPreco()),
+                produto.getListaMateriais().stream()
+                        .map(mp -> new MaterialProdutoDTO(
+                                mp.getMaterial().getId(),
+                                mp.getQuantidade()
+                        )).toList()
+        ));
     }
 
     public Produto findById(Integer id) {
@@ -214,5 +230,31 @@ public class ProdutoService {
         produto.setPreco(valores.precoSugeridoDeVenda());
 
         return produtoRepository.save(produto);
+    }
+
+    public BigDecimal obterCustoMaoDeObra(List<MaterialProduto> listaMateriais) {
+        BigDecimal custoMaoDeObra = BigDecimal.ZERO;
+
+        for (MaterialProduto mp : listaMateriais) {
+            Material material = mp.getMaterial();
+            if (material != null && material.getPreco() != null && material.getQtdEstoque() != null && material.getQtdEstoque().compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal custoDesteMaterial = material.getPreco()
+                        .multiply(mp.getQuantidade());
+                custoMaoDeObra = custoMaoDeObra.add(custoDesteMaterial);
+            }
+        }
+
+        return custoMaoDeObra.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal obterMargemLucroPercentual(BigDecimal custo, BigDecimal preco) {
+        if (custo == null || preco == null || custo.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal lucro = preco.subtract(custo);
+        BigDecimal margemLucroPercentual = lucro.divide(custo, 4, RoundingMode.HALF_UP).multiply(new BigDecimal("100"));
+
+        return margemLucroPercentual.setScale(2, RoundingMode.HALF_UP);
     }
 }
